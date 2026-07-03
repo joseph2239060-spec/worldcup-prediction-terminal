@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>世界杯赛前预测 · 风格A 极客深色</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background: #0a0a14; color: #e8e8f0; font-family: 'Inter', system-ui, sans-serif; }
+  .glow-red { box-shadow: 0 0 24px rgba(255,51,102,0.25); }
+  .glow-cyan { box-shadow: 0 0 24px rgba(0,212,255,0.25); }
+  .card-bg { background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%); border: 1px solid #2d2d4a; }
+  .accent-red { color: #ff3366; }
+  .accent-cyan { color: #00d4ff; }
+  .badge { background: linear-gradient(90deg, #ff3366, #ff6b9d); }
+  .tab-active { background: linear-gradient(90deg, rgba(255,51,102,0.2), rgba(0,212,255,0.1)); border-bottom: 2px solid #ff3366; }
+  .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #2d2d4a; border-radius: 2px; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- 顶部品牌栏 -->
+<div class="border-b border-[#2d2d4a] px-8 py-4 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="badge w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white">90</div>
+    <div>
+      <div class="text-lg font-bold">开球前 <span class="accent-red">90</span> 秒</div>
+      <div class="text-xs text-gray-500">世界杯赛前预测引擎 · v1.0</div>
+    </div>
+  </div>
+  <nav class="flex gap-1 text-sm">
+    <div class="px-5 py-2 rounded tab-active font-medium">今日赛事</div>
+    <div class="px-5 py-2 rounded text-gray-500 hover:text-white cursor-pointer">球员状态</div>
+    <div class="px-5 py-2 rounded text-gray-500 hover:text-white cursor-pointer">盘口对比</div>
+  </nav>
+  <div class="text-xs text-gray-500">模型置信度 <span class="accent-cyan font-bold">71%</span></div>
+</div>
+
+<div class="flex" style="height: calc(100vh - 73px)">
+
+<!-- 左侧赛事列表 -->
+<aside class="w-72 border-r border-[#2d2d4a] overflow-y-auto scrollbar-thin">
+  <div class="px-5 py-3 text-xs text-gray-500 uppercase tracking-wider">今日赛事 · 2026.06.11</div>
+
+  <div class="px-4 py-3 mx-2 mb-2 rounded-lg card-bg glow-red cursor-pointer">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-xs text-gray-400">A组 · 04:00</span>
+      <span class="text-xs accent-red font-bold">★ 揭幕战</span>
+    </div>
+    <div class="flex items-center justify-between text-sm">
+      <span class="font-semibold">🇲🇽 墨西哥</span>
+      <span class="text-gray-500 text-xs">VS</span>
+      <span class="font-semibold">🇿🇦 南非</span>
+    </div>
+    <div class="mt-2 h-1 rounded-full bg-gray-800 overflow-hidden flex">
+      <div class="bg-[#ff3366]" style="width:65%"></div>
+      <div class="bg-gray-600" style="width:22%"></div>
+      <div class="bg-[#00d4ff]" style="width:13%"></div>
+    </div>
+    <div class="mt-1 text-xs text-gray-500">主队胜率 <span class="accent-red">65%</span></div>
+  </div>
+
+  <div class="px-4 py-3 mx-2 mb-2 rounded-lg hover:bg-[#16162a] cursor-pointer border border-transparent">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-xs text-gray-500">D组 · 07:00</span>
+      <span class="text-xs text-gray-600">B</span>
+    </div>
+    <div class="flex items-center justify-between text-sm">
+      <span>🇺🇸 美国</span>
+      <span class="text-gray-600 text-xs">VS</span>
+      <span>🇵🇾 巴拉圭</span>
+    </div>
+    <div class="mt-2 h-1 rounded-full bg-gray-800 overflow-hidden flex">
+      <div class="bg-gray-600" style="width:54%"></div>
+      <div class="bg-gray-700" style="width:28%"></div>
+      <div class="bg-gray-600" style="width:18%"></div>
+    </div>
+  </div>
+
+  <div class="px-4 py-3 mx-2 mb-2 rounded-lg hover:bg-[#16162a] cursor-pointer border border-transparent">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-xs text-gray-500">F组 · 10:00</span>
+      <span class="text-xs text-yellow-500">⚠ 冷门预警</span>
+    </div>
+    <div class="flex items-center justify-between text-sm">
+      <span>🇧🇷 巴西</span>
+      <span class="text-gray-600 text-xs">VS</span>
+      <span>🇲🇦 摩洛哥</span>
+    </div>
+    <div class="mt-2 h-1 rounded-full bg-gray-800 overflow-hidden flex">
+      <div class="bg-gray-600" style="width:62%"></div>
+      <div class="bg-gray-700" style="width:23%"></div>
+      <div class="bg-gray-600" style="width:15%"></div>
+    </div>
+  </div>
+
+  <div class="px-4 py-3 mx-2 mb-2 rounded-lg hover:bg-[#16162a] cursor-pointer border border-transparent">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-xs text-gray-500">H组 · 13:00</span>
+    </div>
+    <div class="flex items-center justify-between text-sm">
+      <span>🇩🇪 德国</span>
+      <span class="text-gray-600 text-xs">VS</span>
+      <span>🇨🇼 库拉索</span>
+    </div>
+    <div class="mt-2 h-1 rounded-full bg-gray-800 overflow-hidden flex">
+      <div class="bg-gray-600" style="width:84%"></div>
+      <div class="bg-gray-700" style="width:11%"></div>
+      <div class="bg-gray-600" style="width:5%"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- 右侧主面板 -->
+<main class="flex-1 overflow-y-auto p-8 scrollbar-thin">
+
+  <!-- 顶部赛事卡片 -->
+  <div class="card-bg rounded-2xl p-6 mb-6">
+    <div class="flex justify-between items-start mb-4">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="badge text-xs px-2 py-1 rounded text-white font-bold">揭幕战</span>
+          <span class="text-xs text-gray-500">A组 · 第1轮 · 2026-06-11 04:00 (北京时间)</span>
+        </div>
+        <h1 class="text-3xl font-bold leading-tight">墨西哥主场优势明显<br><span class="accent-cyan">但南非反击会制造麻烦</span></h1>
+        <div class="mt-2 text-sm text-gray-500">📍 Estadio Azteca, 墨西哥城 · 海拔 2240m · 18°C / 湿度 55%</div>
+      </div>
+      <div class="text-right">
+        <div class="text-xs text-gray-500 mb-1">模型置信度</div>
+        <div class="text-2xl font-bold accent-cyan">71%</div>
+        <div class="text-xs text-gray-500 mt-1">50,000 次蒙特卡洛模拟</div>
+      </div>
+    </div>
+
+    <!-- 概率三柱 -->
+    <div class="grid grid-cols-3 gap-3 mt-6">
+      <div class="card-bg rounded-xl p-4 glow-red">
+        <div class="text-xs text-gray-500 mb-1">墨西哥胜</div>
+        <div class="text-3xl font-bold accent-red">65<span class="text-lg">%</span></div>
+        <div class="mt-2 h-2 rounded-full bg-gray-800 overflow-hidden">
+          <div class="h-full bg-[#ff3366]" style="width:65%"></div>
+        </div>
+      </div>
+      <div class="card-bg rounded-xl p-4">
+        <div class="text-xs text-gray-500 mb-1">平局</div>
+        <div class="text-3xl font-bold text-gray-300">22<span class="text-lg">%</span></div>
+        <div class="mt-2 h-2 rounded-full bg-gray-800 overflow-hidden">
+          <div class="h-full bg-gray-500" style="width:22%"></div>
+        </div>
+      </div>
+      <div class="card-bg rounded-xl p-4 glow-cyan">
+        <div class="text-xs text-gray-500 mb-1">南非胜</div>
+        <div class="text-3xl font-bold accent-cyan">13<span class="text-lg">%</span></div>
+        <div class="mt-2 h-2 rounded-full bg-gray-800 overflow-hidden">
+          <div class="h-full bg-[#00d4ff]" style="width:13%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 期望比分 / 进球 -->
+    <div class="mt-4 flex items-center gap-6 text-sm">
+      <div><span class="text-gray-500">期望比分</span> <span class="font-bold accent-red">2 : 1</span></div>
+      <div><span class="text-gray-500">期望进球</span> <span class="font-bold">2.7</span></div>
+      <div><span class="text-gray-500">大小球(2.5)</span> <span class="font-bold">大 58%</span></div>
+      <div><span class="text-gray-500">双方进球</span> <span class="font-bold">61%</span></div>
+    </div>
+  </div>
+
+  <!-- 4 栏分析卡片 -->
+  <div class="grid grid-cols-4 gap-4">
+
+    <div class="card-bg rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="badge w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold">1</span>
+        <h3 class="font-bold accent-red">墨西哥为什么能赢</h3>
+      </div>
+      <ul class="space-y-2 text-sm text-gray-300">
+        <li class="flex gap-2"><span class="accent-red">▸</span>主场海拔 2240m，南非全员未在高原集训</li>
+        <li class="flex gap-2"><span class="accent-red">▸</span>揭幕战主场加成（历史 7 战 6 胜）</li>
+        <li class="flex gap-2"><span class="accent-red">▸</span>锋线 Henry Martín 近 5 场 4 球</li>
+        <li class="flex gap-2"><span class="accent-red">▸</span>FIFA 排名差 28 位</li>
+      </ul>
+    </div>
+
+    <div class="card-bg rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-yellow-600 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold">2</span>
+        <h3 class="font-bold text-yellow-500">墨西哥的丢分点</h3>
+      </div>
+      <ul class="space-y-2 text-sm text-gray-300">
+        <li class="flex gap-2"><span class="text-yellow-500">▸</span>右后卫 Sánchez 黄牌停赛</li>
+        <li class="flex gap-2"><span class="text-yellow-500">▸</span>中场创造力 xG-buildup 排名 21</li>
+        <li class="flex gap-2"><span class="text-yellow-500">▸</span>揭幕战开场 15 分钟历史失球率 18%</li>
+        <li class="flex gap-2"><span class="text-yellow-500">▸</span>Aguirre 防守反击战术易被身体压制</li>
+      </ul>
+    </div>
+
+    <div class="card-bg rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-cyan-600 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold">3</span>
+        <h3 class="font-bold accent-cyan">南非的爆冷路径</h3>
+      </div>
+      <ul class="space-y-2 text-sm text-gray-300">
+        <li class="flex gap-2"><span class="accent-cyan">▸</span>Lyle Foster 速度直插右后卫缺位</li>
+        <li class="flex gap-2"><span class="accent-cyan">▸</span>非洲杯亚军底子，反击效率 35%</li>
+        <li class="flex gap-2"><span class="accent-cyan">▸</span>门将 Williams 扑救率 78%</li>
+        <li class="flex gap-2"><span class="accent-cyan">▸</span>揭幕战历史平局率 28%</li>
+      </ul>
+    </div>
+
+    <div class="card-bg rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-purple-600 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold">4</span>
+        <h3 class="font-bold text-purple-400">临场变量</h3>
+      </div>
+      <ul class="space-y-2 text-sm text-gray-300">
+        <li class="flex gap-2"><span class="text-purple-400">▸</span>海拔 2240m，未集训队体能-12%</li>
+        <li class="flex gap-2"><span class="text-purple-400">▸</span>南非长途飞行 22h，赛前抵 48h</li>
+        <li class="flex gap-2"><span class="text-purple-400">▸</span>湿度 55%，抵消非洲热适应</li>
+        <li class="flex gap-2"><span class="text-purple-400">▸</span>淘汰赛经验 Aguirre 4 - Broos 0</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- 底部 AI 推理日志 -->
+  <div class="mt-6 card-bg rounded-xl p-4">
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+      <span class="text-xs text-gray-500">AI Agent 推理日志 · 实时更新</span>
+    </div>
+    <div class="font-mono text-xs text-gray-400 space-y-1">
+      <div>[04:00:12] ✓ 加载 50,000 次蒙特卡洛模拟结果</div>
+      <div>[04:00:13] ✓ 注入南非主力出场名单（Williams, Mokoena, Foster...）</div>
+      <div>[04:00:14] <span class="accent-cyan">⚡ 临场变量: 墨西哥城实时湿度 55%, 风速 3m/s, 应用至模型权重</span></div>
+      <div>[04:00:15] <span class="accent-red">⚠ 警告: 墨西哥右后卫 Sánchez 黄牌停赛，模型重算中...</span></div>
+      <div>[04:00:16] ✓ 输出: 墨西哥 65.3% / 平 21.8% / 南非 12.9%</div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+</body>
+</html>

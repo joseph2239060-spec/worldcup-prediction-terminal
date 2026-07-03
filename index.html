@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>WCP Terminal · 世界杯赛前预测</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html { font-size: 20px; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    overflow: hidden;
+  }
+  .mono { font-family: 'JetBrains Mono', 'Consolas', monospace; }
+  .panel { background: #161b22; border: 1px solid #21262d; }
+  .panel-hdr { background: #1c2128; border-bottom: 1px solid #30363d; }
+  .up    { color: #26a69a; }
+  .down  { color: #ef5350; }
+  .amber { color: #ff9500; }
+  .blue  { color: #58a6ff; }
+  .yellow{ color: #f0c674; }
+  .purple{ color: #c084fc; }
+  .muted { color: #9da7b3; }
+  .white { color: #ffffff; }
+  .row-h { border-bottom: 1px solid #21262d; }
+  .tab-active { background: #1f2937; color: #ff9500; border-bottom: 2px solid #ff9500; }
+  .match-active { background: #1f2937; border-left: 3px solid #ff9500; }
+  .blink { animation: blink 1.4s infinite; }
+  @keyframes blink { 50% { opacity: 0.3; } }
+  .scrollbar-thin::-webkit-scrollbar { width: 4px; height: 4px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #30363d; }
+
+  /* 球员状态色 */
+  .pl-HOT  { background: rgba(38,166,154,0.15); border-color: #26a69a; }
+  .pl-KEY  { background: rgba(88,166,255,0.15); border-color: #58a6ff; }
+  .pl-QUEST{ background: rgba(240,198,116,0.15); border-color: #f0c674; }
+  .pl-SUSP { background: rgba(239,83,80,0.2);   border-color: #ef5350; }
+  .pl-OUT  { background: rgba(239,83,80,0.2);   border-color: #ef5350; }
+  .pl-OK   { background: rgba(110,118,129,0.08); border-color: #30363d; }
+
+  .tag-HOT  { background: #26a69a; color: #000; }
+  .tag-KEY  { background: #58a6ff; color: #000; }
+  .tag-QUEST{ background: #f0c674; color: #000; }
+  .tag-SUSP { background: #ef5350; color: #fff; }
+  .tag-OUT  { background: #ef5350; color: #fff; }
+  .tag-OK   { background: #30363d; color: #6e7681; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- 顶部状态栏 -->
+<div class="bg-black px-4 py-1.5 flex items-center justify-between text-xs border-b border-[#30363d]">
+  <div class="flex items-center gap-4 mono">
+    <span class="amber font-bold">WCP &lt;GO&gt;</span>
+    <span class="muted">|</span>
+    <span class="muted">WORLD CUP PREDICT TERMINAL</span>
+    <span class="muted">|</span>
+    <span class="muted">USER:</span><span class="blue">Afu AI</span>
+    <span class="muted">|</span>
+    <span class="muted">SESSION:</span><span class="blue">A7F3D2</span>
+  </div>
+  <div class="flex items-center gap-4 mono">
+    <span class="muted">MODEL:</span><span class="white" id="model-version">—</span>
+    <span class="muted">|</span>
+    <span class="up">● LIVE</span>
+    <span class="muted">|</span>
+    <span class="white" id="now-cst">—</span>
+  </div>
+</div>
+
+<div class="flex" style="height: calc(100vh - 36px)">
+
+<!-- 左侧赛事列表（升到顶部、占满高度，避免上下滚动）-->
+<aside class="w-80 panel overflow-y-auto scrollbar-thin shrink-0" style="border-radius:0">
+  <div class="panel-hdr px-3 py-2 flex justify-between items-center">
+    <span class="amber font-bold mono text-xs">TODAY MATCHES</span>
+    <span class="muted mono text-xs" id="match-count">—</span>
+  </div>
+  <table class="w-full text-xs mono">
+    <thead class="muted">
+      <tr class="row-h">
+        <th class="px-2 py-1 text-left">MATCH</th>
+        <th class="px-2 py-1 text-right">W%</th>
+        <th class="px-2 py-1 text-right">CONF</th>
+      </tr>
+    </thead>
+    <tbody id="match-list"></tbody>
+  </table>
+
+  <div class="panel-hdr px-3 py-1.5 mt-2 flex justify-between items-center border-t border-[#30363d]">
+    <div>
+      <div class="amber font-bold mono text-xs">MODEL ACCURACY · 7D</div>
+      <div class="muted mono text-[10px]">模型近 7 日命中</div>
+    </div>
+    <span class="up mono text-xs font-bold">+3.2%</span>
+  </div>
+  <div class="px-3 pt-2 pb-1 mono flex items-end gap-1 h-14">
+    <div class="w-3 bg-[#26a69a]" style="height:40%"></div>
+    <div class="w-3 bg-[#26a69a]" style="height:55%"></div>
+    <div class="w-3 bg-[#ef5350]" style="height:35%"></div>
+    <div class="w-3 bg-[#26a69a]" style="height:70%"></div>
+    <div class="w-3 bg-[#26a69a]" style="height:65%"></div>
+    <div class="w-3 bg-[#26a69a]" style="height:80%"></div>
+    <div class="w-3 bg-[#26a69a]" style="height:75%"></div>
+    <div class="ml-auto text-right">
+      <div class="up font-bold text-base" id="model-acc">—</div>
+      <div class="muted text-[10px]">hit rate · 命中率</div>
+    </div>
+  </div>
+
+  <!-- 赛季战绩 SEASON SCORECARD -->
+  <div class="panel-hdr px-3 py-1.5 mt-1 flex justify-between items-center border-t border-[#30363d]">
+    <div>
+      <div class="amber font-bold mono text-xs">SEASON SCORECARD</div>
+      <div class="muted mono text-[10px]">小组赛收官 · 74 场</div>
+    </div>
+    <span class="muted mono text-[10px]">GROUP STAGE</span>
+  </div>
+  <div class="px-3 py-2 grid grid-cols-2 gap-1.5">
+    <div class="panel py-1.5 text-center" style="border-color:#26a69a">
+      <div class="up text-2xl font-bold mono leading-none">89%</div>
+      <div class="white mono text-[11px] font-bold mt-0.5">WIN/LOSS</div>
+      <div class="muted mono text-[10px]">分胜负 · 48/54</div>
+    </div>
+    <div class="panel py-1.5 text-center">
+      <div class="white text-2xl font-bold mono leading-none">65%</div>
+      <div class="white mono text-[11px] font-bold mt-0.5">OVERALL</div>
+      <div class="muted mono text-[10px]">总方向 · 48/74</div>
+    </div>
+    <div class="panel py-1.5 text-center">
+      <div class="blue text-2xl font-bold mono leading-none">67%</div>
+      <div class="white mono text-[11px] font-bold mt-0.5">BLIND TEST</div>
+      <div class="muted mono text-[10px]">真盲测 · 26/39</div>
+    </div>
+    <div class="panel py-1.5 text-center" style="border-color:#26a69a">
+      <div class="yellow text-2xl font-bold mono leading-none">5/8</div>
+      <div class="white mono text-[11px] font-bold mt-0.5">LAST 8</div>
+      <div class="muted mono text-[10px]">最近 8 场</div>
+    </div>
+  </div>
+
+  <!-- 胜负 vs 平局 盲区条 -->
+  <div class="px-3 pb-2">
+    <div class="muted mono text-[10px] mb-1 flex justify-between">
+      <span class="up">DECISIVE 分胜负</span><span class="down">DRAW 平局</span>
+    </div>
+    <div class="flex h-2 overflow-hidden rounded">
+      <div class="bg-[#26a69a]" style="width:89%"></div>
+      <div class="bg-[#ef5350]" style="width:11%"></div>
+    </div>
+    <div class="muted mono text-[10px] mt-1">平局是死穴 · Draws = blind spot</div>
+  </div>
+</aside>
+
+<!-- 右侧列：TAB + Ticker + 主区域 -->
+<div class="flex-1 flex flex-col overflow-hidden">
+  <!-- TAB（现在只在主内容区上方）-->
+  <div class="bg-[#0d1117] px-4 border-b border-[#30363d] flex items-center text-xs shrink-0">
+    <div class="px-4 py-2 mono cursor-pointer tab" data-tab="matches">1) TODAY_MATCHES</div>
+    <div class="px-4 py-2 mono cursor-pointer tab" data-tab="players">2) PLAYER_STATUS</div>
+    <div class="px-4 py-2 mono cursor-pointer tab" data-tab="odds">3) ODDS_COMPARE</div>
+    <div class="px-4 py-2 mono cursor-pointer tab" data-tab="arena">4) MODEL_ARENA</div>
+    <div class="ml-auto flex items-center gap-2 py-1.5">
+      <span class="mono muted text-xs">DATE</span>
+      <select id="day-select" class="bg-[#161b22] border border-[#30363d] text-white mono text-xs px-2 py-1 rounded cursor-pointer"></select>
+    </div>
+  </div>
+  <!-- Ticker 滚动条 -->
+  <div class="bg-[#1c2128] py-1.5 border-b border-[#30363d] overflow-hidden shrink-0">
+    <div class="flex gap-8 whitespace-nowrap mono text-xs px-4" id="ticker"></div>
+  </div>
+  <!-- 主区域 -->
+  <main class="flex-1 overflow-y-auto scrollbar-thin p-3" id="main-content"></main>
+</div>
+
+</div>
+
+<!-- 全部每日预测数据已合并到 matches-all.js（原始单日文件仍保留在 data/，可回退） -->
+<script src="data/matches-all.js" onerror="console.log('matches-all data not available')"></script>
+<script src="data/model-arena.js" onerror="console.log('arena data not available')"></script>
+<script src="data/odds-latest.js" onerror="console.log('odds not fetched yet — run py fetch_odds.py')"></script>
+<script>
+// ─── State ─────────────────────────────────────────────
+const STATE = {
+  currentMatchId: null,
+  currentTab: 'matches',
+  currentDay: null
+};
+
+// 多天数据：从 WCP_DAYS 取，按日期排序
+const DAYS = window.WCP_DAYS || { [window.MATCHES_DATA.date]: window.MATCHES_DATA };
+const DAY_KEYS = Object.keys(DAYS).sort();
+STATE.currentDay = DAY_KEYS[DAY_KEYS.length - 1]; // 默认最新一天
+let data = DAYS[STATE.currentDay];
+
+// ─── 日期下拉初始化（只建一次）──────────────────────────
+function initDaySelector() {
+  const sel = document.getElementById('day-select');
+  sel.innerHTML = DAY_KEYS.map(k => {
+    const d = DAYS[k];
+    const done = d.matches.every(m => m.result);
+    const label = k + (done ? ' ✓已结束' : ' · 预测');
+    return `<option value="${k}" ${k === STATE.currentDay ? 'selected' : ''}>${label}</option>`;
+  }).join('');
+  sel.addEventListener('change', (e) => {
+    STATE.currentDay = e.target.value;
+    data = DAYS[STATE.currentDay];
+    STATE.currentMatchId = data.matches[0].id;
+    initShell();
+  });
+}
+
+// ─── 顶部 / Ticker / 左侧列表初始化 ─────────────────────
+function initShell() {
+  document.getElementById('model-version').textContent = data.model_version;
+  document.getElementById('model-acc').textContent = data.model_accuracy_7d != null ? data.model_accuracy_7d + '%' : 'baseline';
+  document.getElementById('match-count').textContent = data.matches.length + ' fixtures';
+  document.getElementById('now-cst').textContent = data.date + ' · ' + data.tournament.split('·').pop().trim();
+
+  // Ticker — edge 未接入时显示置信度
+  const ticker = document.getElementById('ticker');
+  const tickerItems = data.matches.map(m =>
+    `<span><span class="muted">${m.home.code}/${m.away.code}</span> <span class="up">${m.probabilities.home_win}%↑</span> <span class="muted">conf</span> <span class="amber">${m.confidence}%</span></span>`
+  ).join('');
+  ticker.innerHTML = tickerItems + tickerItems +
+    `<span><span class="muted">DATA</span> <span class="up">官方核实 ✓</span></span>` +
+    `<span><span class="muted">ODDS</span> <span class="yellow">待接入</span></span>`;
+
+  // 左侧列表
+  const list = document.getElementById('match-list');
+  list.innerHTML = data.matches.map(m => {
+    const tag = m.tag === 'OPENING' ? '<span class="amber">★揭幕战</span>' :
+                m.tag === 'UPSET_WARN' ? '<span class="down">⚠UPSET</span>' :
+                m.tag === 'CLOSE_MATCH' ? '<span class="yellow">◆焦点</span>' :
+                `<span class="muted">${m.group}组</span>`;
+    return `
+      <tr class="row-h cursor-pointer match-row" data-id="${m.id}">
+        <td class="px-2 py-2">
+          <div class="white font-bold">${m.home.code} vs ${m.away.code}</div>
+          <div class="muted text-[10px]">${m.kickoff_cst.slice(11)} · ${tag}</div>
+        </td>
+        <td class="px-2 py-2 text-right">
+          <div class="up">${m.probabilities.home_win}</div>
+          <div class="muted text-[10px]">D ${m.probabilities.draw} / ${m.probabilities.away_win}</div>
+        </td>
+        <td class="px-2 py-2 text-right ${m.result ? (m.review && m.review.verdict === 'HIT' ? 'up' : m.review && m.review.verdict === 'PARTIAL' ? 'yellow' : 'down') : m.confidence > 80 ? 'up' : m.confidence > 65 ? 'amber' : 'yellow'} font-bold">${m.result ? 'FT ' + m.result.scoreline : m.confidence + '%'}</td>
+      </tr>`;
+  }).join('');
+
+  // 绑定点击
+  document.querySelectorAll('.match-row').forEach(row => {
+    row.addEventListener('click', () => {
+      STATE.currentMatchId = row.dataset.id;
+      highlightMatch();
+      render();
+    });
+  });
+
+  // 绑定 tab
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      STATE.currentTab = tab.dataset.tab;
+      highlightTab();
+      render();
+    });
+  });
+
+  // 默认选第一场
+  STATE.currentMatchId = data.matches[0].id;
+  highlightMatch();
+  highlightTab();
+  render();
+}
+
+function highlightMatch() {
+  document.querySelectorAll('.match-row').forEach(r => {
+    r.classList.toggle('match-active', r.dataset.id === STATE.currentMatchId);
+  });
+}
+
+function highlightTab() {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('tab-active', t.dataset.tab === STATE.currentTab);
+    t.classList.toggle('font-bold', t.dataset.tab === STATE.currentTab);
+    t.classList.toggle('muted', t.dataset.tab !== STATE.currentTab);
+  });
+}
+
+// ─── 渲染主区域 ────────────────────────────────────────
+function getCurrentMatch() {
+  return data.matches.find(m => m.id === STATE.currentMatchId);
+}
+
+function render() {
+  const main = document.getElementById('main-content');
+  // 擂台 tab 不依赖当前比赛，单独处理
+  if (STATE.currentTab === 'arena') { main.innerHTML = renderArenaTab(); return; }
+
+  const m = getCurrentMatch();
+  if (!m) return;
+
+  if (STATE.currentTab === 'matches')      main.innerHTML = renderMatchTab(m);
+  else if (STATE.currentTab === 'players') main.innerHTML = renderPlayerTab(m);
+  else if (STATE.currentTab === 'odds')    main.innerHTML = renderOddsTab(m);
+}
+
+// ─── 泊松工具 ──────────────────────────────────────────
+function _fact(k){ let r=1; for(let i=2;i<=k;i++) r*=i; return r; }
+function _pois(k,l){ return Math.exp(-l)*Math.pow(l,k)/_fact(k); }
+
+function topScorelines(lh, la, n) {
+  const cells = [];
+  for (let h = 0; h <= 6; h++) for (let a = 0; a <= 6; a++)
+    cells.push({ h, a, p: _pois(h, lh) * _pois(a, la) });
+  cells.sort((x, y) => y.p - x.p);
+  return cells.slice(0, n);
+}
+
+// ─── 双 λ：进球 λ（未折扣，favorite 还原被反灌水砍掉的进攻）──
+// 胜平负概率不用它（仍用 data 里的 probabilities），只用于比分/大小球展示
+function goalsLambda(m) {
+  const lh0 = m.expected_goals.home, la0 = m.expected_goals.away;
+  // favorite(进攻λ更高的一方)×1.25，弱队×1.05
+  if (lh0 >= la0) return { home: +(lh0*1.25).toFixed(2), away: +(la0*1.05).toFixed(2) };
+  return { home: +(lh0*1.05).toFixed(2), away: +(la0*1.25).toFixed(2) };
+}
+function over25(lh, la) {
+  let u = 0;
+  for (let h=0;h<=6;h++) for (let a=0;a<=6;a++) if (h+a<=2) u += _pois(h,lh)*_pois(a,la);
+  return +((1-u)*100).toFixed(0);
+}
+function btts(lh, la) {
+  return +(((1-_pois(0,lh))*(1-_pois(0,la)))*100).toFixed(0);
+}
+
+// ─── TAB 4: MODEL ARENA（双模型擂台累计计分）──────────────
+function renderArenaTab() {
+  const arena = window.WCP_ARENA;
+  if (!arena || !arena.matches.length) {
+    return `<div class="panel p-4"><div class="muted mono">暂无擂台数据</div></div>`;
+  }
+  const ms = arena.matches;
+  const v1hit = ms.filter(x => x.v1.hit).length;
+  const v3hit = ms.filter(x => x.v3.hit).length;
+  const n = ms.length;
+  const callLabel = { W: '主胜', D: '平', L: '客胜' };
+
+  const bar = (pct, leadColor) => `<div class="h-1 bg-[#21262d] overflow-hidden mt-1"><div class="h-full" style="width:${pct}%;background:${leadColor}"></div></div>`;
+
+  const rowCells = (model, mdl) => {
+    const probs = [['hw', model.hw], ['dr', model.dr], ['aw', model.aw]];
+    return probs.map(([k, v]) => {
+      const isCall = (model.call === 'W' && k === 'hw') || (model.call === 'D' && k === 'dr') || (model.call === 'L' && k === 'aw');
+      return `<td class="px-2 py-1 text-right ${isCall ? (model.hit ? 'up font-bold' : 'down font-bold') : 'muted'}">${v.toFixed(1)}%</td>`;
+    }).join('');
+  };
+
+  return `
+    <!-- 计分牌头部 -->
+    <div class="panel mb-3">
+      <div class="panel-hdr px-3 py-1.5 flex justify-between items-center">
+        <span class="amber mono font-bold text-sm">🏆 MODEL ARENA · 双模型擂台</span>
+        <span class="muted mono text-xs">已打完 ${n} 场 · 方向命中对比</span>
+      </div>
+      <div class="p-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="panel p-4 text-center" style="border-color:${v1hit >= v3hit ? '#f0c674' : '#30363d'}">
+            <div class="muted mono text-xs mb-1">v1 · 简单平均</div>
+            <div class="yellow text-4xl font-bold mono">${v1hit}<span class="text-xl muted">/${n}</span></div>
+            <div class="muted mono text-[10px] mt-1">方向命中</div>
+          </div>
+          <div class="panel p-4 text-center" style="border-color:${v3hit > v1hit ? '#00ffff' : '#30363d'}">
+            <div class="muted mono text-xs mb-1">v3 · 加权 λ</div>
+            <div class="text-4xl font-bold mono" style="color:#00d4ff">${v3hit}<span class="text-xl muted">/${n}</span></div>
+            <div class="muted mono text-[10px] mt-1">方向命中</div>
+          </div>
+        </div>
+        <div class="mt-3 text-center mono text-sm ${v3hit > v1hit ? 'up' : v1hit > v3hit ? 'yellow' : 'muted'} font-bold">
+          ${v3hit > v1hit ? '→ v3 加权 λ 领先' : v1hit > v3hit ? '→ v1 简单平均 领先' : '→ 暂时打平'}
+        </div>
+        <div class="mt-2 muted mono text-[11px] leading-relaxed">${arena.note}</div>
+      </div>
+    </div>
+
+    <!-- 逐场对比表 -->
+    <div class="panel">
+      <div class="panel-hdr px-3 py-1.5 amber mono font-bold text-xs">逐场对比 · 各自的预测 vs 真实结果</div>
+      <table class="w-full mono text-xs">
+        <thead class="muted">
+          <tr class="row-h">
+            <th class="px-2 py-1 text-left">比赛</th>
+            <th class="px-2 py-1 text-left">模型</th>
+            <th class="px-2 py-1 text-right">主胜</th>
+            <th class="px-2 py-1 text-right">平</th>
+            <th class="px-2 py-1 text-right">客胜</th>
+            <th class="px-2 py-1 text-center">判断</th>
+            <th class="px-2 py-1 text-center">真实</th>
+            <th class="px-2 py-1 text-center">✓</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${ms.map(x => `
+            <tr class="row-h">
+              <td class="px-2 py-2 white" rowspan="2">${x.label}<div class="muted text-[10px]">${x.date} · FT ${x.score}</div></td>
+              <td class="px-2 py-1 yellow">v1</td>
+              ${rowCells(x.v1, 'v1')}
+              <td class="px-2 py-1 text-center ${x.v1.hit ? 'up' : 'down'}">${callLabel[x.v1.call]}</td>
+              <td class="px-2 py-1 text-center white" rowspan="2">${callLabel[x.actual]}</td>
+              <td class="px-2 py-1 text-center ${x.v1.hit ? 'up' : 'down'} font-bold">${x.v1.hit ? '✓' : '✗'}</td>
+            </tr>
+            <tr class="row-h">
+              <td class="px-2 py-1" style="color:#00d4ff">v3</td>
+              ${rowCells(x.v3, 'v3')}
+              <td class="px-2 py-1 text-center ${x.v3.hit ? 'up' : 'down'}">${callLabel[x.v3.call]}</td>
+              <td class="px-2 py-1 text-center ${x.v3.hit ? 'up' : 'down'} font-bold">${x.v3.hit ? '✓' : '✗'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 说明 -->
+    <div class="panel mt-3">
+      <div class="panel-hdr px-3 py-1.5 amber mono font-bold text-xs">规则</div>
+      <div class="p-3 mono text-[11px] muted leading-relaxed space-y-1">
+        <div>· 两个模型喂<span class="white">完全相同</span>的历史数据，唯一区别是 v3 加了 时间近度 × 对手强度 × 赛事级别 的权重</div>
+        <div>· <span class="white">方向命中</span> = 模型最高概率的结果（主胜/平/客胜）与真实结果一致</div>
+        <div>· 样本越大越说明问题，单看几场不够；每天打完往里加</div>
+        <div>· 数字来自 simulate_compare.py，球队近期战绩为示例数据（正式上线接 FBref）</div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── TAB 1: MATCH ANALYSIS ─────────────────────────────
+function renderMatchTab(m) {
+  const stars = '★'.repeat(m.value_rating) + '☆'.repeat(5 - m.value_rating);
+  // 双 λ：进球用未折扣 λ（让强队比分更合理），胜平负仍用 data 概率
+  const gl = goalsLambda(m);
+  const glScore = Math.round(gl.home) + ' : ' + Math.round(gl.away);
+  const glOver = over25(gl.home, gl.away);
+  const glBtts = btts(gl.home, gl.away);
+
+  // ── 新输出：分胜负→谁赢 + 平局风险（模型在分胜负比赛90%准，平局不硬猜）──
+  const pH = m.probabilities.home_win, pD = m.probabilities.draw, pA = m.probabilities.away_win;
+  const decTeam = pH >= pA ? m.home : m.away;
+  const decConf = Math.round(100 * Math.max(pH, pA) / (pH + pA));  // 90分钟分胜负时谁赢(剔除平局后)
+  const isKO = m.tag === 'KNOCKOUT' || m.group === 'R32';  // 淘汰赛：90分钟平→加时/点球，最终必分胜负
+  const drawRisk = pD >= 30 ? { lv: '高', cls: 'down', w: 90 } : pD >= 25 ? { lv: '中', cls: 'yellow', w: 60 } : { lv: '低', cls: 'up', w: 30 };
+  const judgeBanner = `
+    <div class="panel mb-3" style="border-color:#ff9500">
+      <div class="panel-hdr px-3 py-1.5 amber mono font-bold text-xs">${isKO ? '📢 模型判断 · 只算90分钟分胜负 · 加时/点球随机·不预测' : '📢 模型判断 · 分胜负看赢家(90%命中) + 平局当风险不硬猜'}</div>
+      <div class="p-4 grid grid-cols-2 gap-4">
+        <div class="panel p-3 text-center">
+          <div class="muted mono text-xs mb-1">${isKO ? '90分钟分胜负 → 谁赢' : '分出胜负时 → 谁赢'}</div>
+          <div class="white text-2xl font-bold">${decTeam.flag} ${decTeam.name_zh}</div>
+          <div class="up mono text-sm mt-1">${isKO ? '90分钟胜率' : '条件胜率'} ${decConf}%</div>
+          <div class="muted mono text-[10px] mt-1">${isKO ? '(90分钟内若分出胜负，谁更可能赢)' : '(剔除平局后，这两队谁更可能赢)'}</div>
+        </div>
+        <div class="panel p-3 text-center">
+          <div class="muted mono text-xs mb-1">${isKO ? '拖进加时几率' : '平局风险'}</div>
+          <div class="${isKO ? 'blue' : drawRisk.cls} text-2xl font-bold">${isKO ? pD + '%' : drawRisk.lv + ' <span class="text-base">(' + pD + '%)</span>'}</div>
+          <div class="mt-2 h-2 bg-[#21262d] overflow-hidden rounded"><div class="h-full ${isKO ? 'bg-[#58a6ff]' : (drawRisk.lv==='高'?'bg-[#ef5350]':drawRisk.lv==='中'?'bg-[#f0c674]':'bg-[#26a69a]')}" style="width:${isKO ? pD : drawRisk.w}%"></div></div>
+          <div class="muted mono text-[10px] mt-1">${isKO ? '⚠ 90分钟平就进加时/点球，那之后五五开·模型不算' : (drawRisk.lv==='高'?'⚠ 别上重注，很可能平':drawRisk.lv==='中'?'有平局可能':'大概率分胜负')}</div>
+        </div>
+      </div>
+    </div>`;
+  const moduleCard = (title, color, score, items) => `
+    <div class="panel">
+      <div class="panel-hdr px-3 py-1.5 flex justify-between">
+        <span class="${color} mono font-bold text-xs">${title}</span>
+        <span class="${color} mono text-xs">${score > 0 ? '+' : ''}${score.toFixed(2)}</span>
+      </div>
+      <table class="w-full mono text-xs">
+        <tbody class="divide-y divide-[#21262d]">
+          ${items.map(it => `
+            <tr>
+              <td class="px-3 py-2">
+                <div class="muted">${it.label}</div>
+                <div class="text-[10px] muted opacity-60">${it.note}</div>
+              </td>
+              <td class="px-3 py-2 text-right ${color}">${it.value}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+
+  // 比赛已结束 → 复盘卡（颜色跟 verdict 走）
+  const vd = m.review ? m.review.verdict : 'HIT';
+  const vdStyle = vd === 'HIT'
+    ? { border: '#26a69a', bg: 'rgba(38,166,154,0.12)', cls: 'up', label: '✅ HIT · 预测命中', icon: '✅' }
+    : vd === 'PARTIAL'
+    ? { border: '#f0c674', bg: 'rgba(240,198,116,0.12)', cls: 'yellow', label: '◐ PARTIAL · 方向偏差(已预警)', icon: '◐' }
+    : { border: '#ef5350', bg: 'rgba(239,83,80,0.12)', cls: 'down', label: '✗ MISS · 方向失手', icon: '✗' };
+  const reviewCard = (m.result && m.review) ? `
+    <div class="panel mb-3" style="border-color:${vdStyle.border}">
+      <div class="panel-hdr px-3 py-1.5 flex justify-between items-center" style="background:${vdStyle.bg}">
+        <span class="${vdStyle.cls} mono font-bold text-sm">${vdStyle.icon} POST-MATCH REVIEW · 赛后复盘 · FT ${m.result.scoreline} · ${vdStyle.label}</span>
+        <span class="muted mono text-xs">${m.result.source}</span>
+      </div>
+      <div class="p-4">
+        <div class="white font-bold mb-3">${m.review.headline}</div>
+        <!-- 进球 + 红牌 -->
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div class="panel p-3">
+            <div class="up mono text-xs font-bold mb-2">⚽ GOALS · 进球</div>
+            ${m.result.scorers.map(s => `<div class="mono text-xs"><span class="amber">${s.min}</span> <span class="white">${s.player}</span> <span class="muted">(${s.team})</span></div>`).join('')}
+          </div>
+          <div class="panel p-3">
+            <div class="down mono text-xs font-bold mb-2">🟥 RED CARDS · 红牌 × ${m.result.red_cards.length}（blind spot 盲区）</div>
+            ${m.result.red_cards.map(r => `<div class="mono text-xs"><span class="amber">${r.min}</span> <span class="white">${r.player}</span> <span class="muted">(${r.team}) ${r.reason}</span></div>`).join('')}
+          </div>
+        </div>
+        <!-- 命中 vs 盲区 -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="panel p-3">
+            <div class="up mono text-xs font-bold mb-2">✓ MODEL GOT RIGHT · 模型说对了</div>
+            ${m.review.hits.map(h => `<div class="text-xs mb-1"><span class="up">▸</span> ${h}</div>`).join('')}
+          </div>
+          <div class="panel p-3">
+            <div class="yellow mono text-xs font-bold mb-2">✗ MODEL MISSES · 偏差/盲区</div>
+            ${m.review.misses.map(x => `<div class="text-xs mb-1"><span class="yellow">▸</span> ${x}</div>`).join('')}
+          </div>
+        </div>
+        <!-- 迭代 takeaway -->
+        <div class="panel p-3 mt-3" style="border-color:#58a6ff">
+          <div class="blue mono text-xs font-bold mb-1">🔧 MODEL ITERATION · 模型迭代</div>
+          <div class="text-xs muted">${m.review.model_lesson}</div>
+        </div>
+      </div>
+    </div>` : '';
+
+  return reviewCard + (m.result ? '' : judgeBanner) + `
+    <!-- 头条 -->
+    <div class="panel mb-3">
+      <div class="panel-hdr px-3 py-1.5 flex justify-between items-center">
+        <span class="amber mono font-bold text-xs">MATCH ANALYSIS · ${m.id}${m.result ? ' · 赛前预测存档' : ''}</span>
+        <span class="muted mono text-xs">${m.result ? '已结束，下方为原始预测' : 'last update: 12s ago'} <span class="up blink">●</span></span>
+      </div>
+      <div class="p-4">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="mono text-xs muted mb-1">GROUP ${m.group} · ${m.tag || 'ROUND ' + m.round} · ${m.kickoff_cst}</div>
+            <h1 class="text-xl white font-bold leading-tight">${m.home.flag} ${m.home.name_zh} vs ${m.away.name_zh} ${m.away.flag}</h1>
+            <h2 class="text-sm amber mt-1">${m.headline}</h2>
+            <!-- VENUE & WEATHER 高亮条 -->
+            <div class="mt-3 flex flex-wrap gap-2 mono text-xs">
+              <span class="panel px-3 py-1.5 flex items-center gap-1.5">
+                <span class="text-base">📍</span>
+                <span><span class="muted">VENUE</span> <span class="white">${m.venue}</span></span>
+              </span>
+              <span class="panel px-3 py-1.5 flex items-center gap-1.5">
+                <span class="text-base">⛰️</span>
+                <span><span class="muted">ALT</span> <span class="${m.altitude_m > 1500 ? 'amber font-bold' : 'white'}">${m.altitude_m}m</span></span>
+              </span>
+              <span class="panel px-3 py-1.5 flex items-center gap-1.5">
+                <span class="text-base">🌡️</span>
+                <span><span class="muted">TEMP</span> <span class="${m.temp_c > 28 ? 'down font-bold' : m.temp_c < 15 ? 'blue font-bold' : 'white'}">${m.temp_c}°C</span></span>
+              </span>
+              <span class="panel px-3 py-1.5 flex items-center gap-1.5">
+                <span class="text-base">💧</span>
+                <span><span class="muted">HUMID</span> <span class="${m.humidity_pct > 65 ? 'blue font-bold' : 'white'}">${m.humidity_pct}%</span></span>
+              </span>
+              <span class="panel px-3 py-1.5 flex items-center gap-1.5">
+                <span class="text-base">⚖️</span>
+                <span><span class="muted">REF</span> <span class="white">${m.referee}</span></span>
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="muted mono text-xs">MODEL CONFIDENCE</div>
+            <div class="amber text-3xl font-bold mono">${m.confidence}.0%</div>
+            <div class="muted mono text-[10px]">n = ${m.monte_carlo_n.toLocaleString()} MC sims</div>
+            ${m.red_card_risk ? `<div class="mt-2 inline-block px-2 py-1 rounded mono text-[10px] font-bold ${m.red_card_risk === 'HIGH' ? 'tag-SUSP' : m.red_card_risk === 'ELEVATED' ? 'tag-QUEST' : 'tag-OK'}">🟥 红牌风险 ${m.red_card_risk}</div>` : ''}
+          </div>
+        </div>
+
+        <!-- 概率三柱 + value -->
+        <div class="grid grid-cols-7 gap-2 mt-4">
+          <div class="col-span-2 panel p-3 text-center">
+            <div class="muted mono text-xs">${m.home.code}_WIN</div>
+            <div class="up text-2xl font-bold mono">${m.probabilities.home_win}%</div>
+            <div class="mt-1 mono text-[10px] ${m.edge_pct > 3 ? 'up' : 'muted'}">${m.edge_pct > 3 ? '▲ +' + m.edge_pct + ' vs odds' : '— flat'}</div>
+            <div class="mt-1 h-1 bg-[#21262d] overflow-hidden"><div class="h-full bg-[#26a69a]" style="width:${m.probabilities.home_win}%"></div></div>
+          </div>
+          <div class="col-span-2 panel p-3 text-center">
+            <div class="muted mono text-xs">DRAW</div>
+            <div class="white text-2xl font-bold mono">${m.probabilities.draw}%</div>
+            <div class="mt-1 mono text-[10px] muted">— flat</div>
+            <div class="mt-1 h-1 bg-[#21262d] overflow-hidden"><div class="h-full bg-[#6e7681]" style="width:${m.probabilities.draw}%"></div></div>
+          </div>
+          <div class="col-span-2 panel p-3 text-center">
+            <div class="muted mono text-xs">${m.away.code}_WIN</div>
+            <div class="down text-2xl font-bold mono">${m.probabilities.away_win}%</div>
+            <div class="mt-1 mono text-[10px] muted">model output</div>
+            <div class="mt-1 h-1 bg-[#21262d] overflow-hidden"><div class="h-full bg-[#ef5350]" style="width:${m.probabilities.away_win}%"></div></div>
+          </div>
+          <div class="panel p-3 text-center">
+            <div class="muted mono text-xs">VALUE</div>
+            <div class="amber text-lg font-bold mono">${stars}</div>
+            <div class="mono text-[10px] muted mt-1">edge 见 ODDS tab</div>
+          </div>
+        </div>
+
+        <div class="mt-3 grid grid-cols-5 gap-2 mono text-xs">
+          <div class="panel px-3 py-2"><div class="muted">EXP_SCORE</div><div class="white font-bold">${glScore}</div><div class="muted text-[9px]">期望比分(进球λ)</div></div>
+          <div class="panel px-3 py-2"><div class="muted">EXP_GOALS</div><div class="white font-bold">${(gl.home + gl.away).toFixed(1)}</div></div>
+          <div class="panel px-3 py-2"><div class="muted">OVER 2.5</div><div class="up font-bold">${glOver}%</div></div>
+          <div class="panel px-3 py-2"><div class="muted">BTTS</div><div class="up font-bold">${glBtts}%</div></div>
+          <div class="panel px-3 py-2"><div class="muted">CS_${m.home.code}</div><div class="yellow font-bold">${m.clean_sheet_home}%</div></div>
+        </div>
+
+        <!-- 最可能比分分布（泊松算出，不止一个比分）-->
+        <div class="mt-3 panel p-3">
+          <div class="muted mono text-xs mb-2">最可能的比分 TOP 6 <span class="opacity-60">· 进球λ ${gl.home} vs ${gl.away}（未折扣，强队还原真实进攻）；单一比分概率都不高才是足球真相</span></div>
+          <div class="grid grid-cols-6 gap-2">
+            ${topScorelines(gl.home, gl.away, 6).map((c, i) => {
+              const isDraw = c.h === c.a;
+              const lean = c.h > c.a ? 'up' : c.h < c.a ? 'down' : 'yellow';
+              return `<div class="panel px-2 py-2 text-center ${i===0?'border':''}" ${i===0?'style="border-color:#ff9500"':''}>
+                <div class="${lean} mono text-lg font-bold">${c.h}-${c.a}</div>
+                <div class="muted mono text-[10px]">${(c.p*100).toFixed(1)}%</div>
+                ${i===0?'<div class="amber mono text-[9px]">最可能</div>':isDraw?'<div class="yellow mono text-[9px]">平</div>':''}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 栏分析模块 -->
+    <div class="grid grid-cols-4 gap-3">
+      ${moduleCard(`[+] ${m.home.code} WINS`, 'up',     m.modules.home_win_reasons.score,  m.modules.home_win_reasons.items)}
+      ${moduleCard(`[-] ${m.home.code} RISK`, 'down',   m.modules.home_risk.score,         m.modules.home_risk.items)}
+      ${moduleCard(`[!] ${m.away.code} UPSET`, 'blue',  m.modules.away_upset_path.score,   m.modules.away_upset_path.items)}
+      ${moduleCard('[~] LIVE VARS · 天气/场地/旅途', 'yellow', m.modules.live_variables.score, m.modules.live_variables.items)}
+    </div>
+
+    <!-- LIVE LOG -->
+    <div class="panel mt-3">
+      <div class="panel-hdr px-3 py-1.5 amber mono font-bold text-xs">LIVE LOG · AGENT RECOMPUTE TRACE</div>
+      <div class="p-3 mono text-xs space-y-1">
+        ${m.live_log.map(l => {
+          const cls = l.level === 'OK' ? 'up' : l.level === 'WARN' ? 'down' : 'blue';
+          return `<div><span class="muted">[${l.time}]</span> <span class="${cls}">${l.level === 'OK' ? '✓' : l.level === 'WARN' ? '⚠' : '⚡'}</span> <span class="white">${l.msg}</span></div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ─── TAB 2: PLAYER STATUS ──────────────────────────────
+function renderPlayerTab(m) {
+  const statusLabel = {
+    HOT: '状态火热', KEY: '关键人物', QUEST: '伤情未定',
+    SUSP: '黄牌停赛', OUT: '缺阵', OK: '正常'
+  };
+  const playerCard = (p) => `
+    <div class="panel p-3 border-l-2 pl-${p.status}" style="border-left-width: 3px">
+      <div class="flex justify-between items-start mb-1">
+        <div>
+          <div class="white font-bold mono text-sm">${p.name}</div>
+          <div class="muted mono text-[10px]">${p.pos}</div>
+        </div>
+        <span class="tag-${p.status} px-2 py-0.5 mono text-[10px] font-bold rounded">${p.status}</span>
+      </div>
+      <div class="muted text-[11px] mt-1">${p.note}</div>
+      <div class="amber mono text-[10px] mt-1 opacity-70">${statusLabel[p.status]}</div>
+    </div>`;
+
+  return `
+    <div class="panel mb-3">
+      <div class="panel-hdr px-3 py-1.5 flex justify-between">
+        <span class="amber mono font-bold text-xs">PLAYER STATUS · ${m.id}</span>
+        <span class="muted mono text-xs">${m.home.code} vs ${m.away.code} · kickoff ${m.kickoff_cst.slice(11)}</span>
+      </div>
+      <div class="p-4">
+        <div class="grid grid-cols-2 gap-6">
+          <!-- 主队 -->
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">${m.home.flag}</span>
+              <div>
+                <div class="white font-bold text-lg">${m.home.name_zh}</div>
+                <div class="muted mono text-xs">${m.home.code} · FIFA #${m.home.fifa_rank} · HOME</div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 gap-2">
+              ${m.players.home.map(playerCard).join('')}
+            </div>
+          </div>
+          <!-- 客队 -->
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">${m.away.flag}</span>
+              <div>
+                <div class="white font-bold text-lg">${m.away.name_zh}</div>
+                <div class="muted mono text-xs">${m.away.code} · FIFA #${m.away.fifa_rank} · AWAY</div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 gap-2">
+              ${m.players.away.map(playerCard).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 图例 -->
+    <div class="panel">
+      <div class="panel-hdr px-3 py-1.5 amber mono font-bold text-xs">STATUS LEGEND</div>
+      <div class="p-3 flex gap-4 flex-wrap mono text-xs">
+        <div><span class="tag-HOT px-2 py-0.5 font-bold rounded">HOT</span> <span class="muted ml-1">状态火热</span></div>
+        <div><span class="tag-KEY px-2 py-0.5 font-bold rounded">KEY</span> <span class="muted ml-1">关键人物</span></div>
+        <div><span class="tag-QUEST px-2 py-0.5 font-bold rounded">QUEST</span> <span class="muted ml-1">伤情未定</span></div>
+        <div><span class="tag-SUSP px-2 py-0.5 font-bold rounded">SUSP</span> <span class="muted ml-1">停赛</span></div>
+        <div><span class="tag-OUT px-2 py-0.5 font-bold rounded">OUT</span> <span class="muted ml-1">缺阵</span></div>
+        <div><span class="tag-OK px-2 py-0.5 font-bold rounded">OK</span> <span class="muted ml-1">正常</span></div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── TAB 3: ODDS COMPARE ───────────────────────────────
+function renderOddsTab(m) {
+  // 从实时盘口里找这场（任意主客朝向匹配）
+  const odds = window.WCP_ODDS || [];
+  let entry = null, swapped = false;
+  for (const e of odds) {
+    if (e.home_code === m.home.code && e.away_code === m.away.code) { entry = e; swapped = false; break; }
+    if (e.home_code === m.away.code && e.away_code === m.home.code) { entry = e; swapped = true; break; }
+  }
+
+  const fairHome = (100 / m.probabilities.home_win).toFixed(2);
+  const fairDraw = (100 / m.probabilities.draw).toFixed(2);
+  const fairAway = (100 / m.probabilities.away_win).toFixed(2);
+
+  // 没匹配到盘口 → 提示（已结束的比赛 / feed 里没这对阵）
+  if (!entry) {
+    return `
+      <div class="panel mb-3">
+        <div class="panel-hdr px-3 py-1.5 flex justify-between">
+          <span class="amber mono font-bold text-xs">ODDS COMPARE · ${m.id}</span>
+          <span class="muted mono text-xs">${m.home.code} vs ${m.away.code}</span>
+        </div>
+        <div class="p-4">
+          <div class="panel p-4 mb-3">
+            <div class="muted mono text-xs mb-2">MODEL FAIR ODDS · 模型公允赔率 (= 100 / 模型胜率)</div>
+            <div class="grid grid-cols-3 gap-2 mono">
+              <div><div class="muted text-[10px]">${m.home.code} 胜</div><div class="up text-2xl font-bold">${fairHome}</div></div>
+              <div><div class="muted text-[10px]">平局</div><div class="white text-2xl font-bold">${fairDraw}</div></div>
+              <div><div class="muted text-[10px]">${m.away.code} 胜</div><div class="down text-2xl font-bold">${fairAway}</div></div>
+            </div>
+          </div>
+          <div class="panel p-4 border" style="border-color:#6e7681">
+            <div class="muted mono text-xs leading-relaxed space-y-1">
+              <div>实时盘口里没找到这场（${odds.length ? '该比赛已结束/不在当前 feed' : '尚未运行 fetch_odds.py'}）。</div>
+              <div class="mt-1">运行 <span class="white">py fetch_odds.py</span> 拉最新盘口；只有即将开赛的比赛才有盘口。</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // 对齐市场概率到"我们的主队/客队"
+  const mk = entry.market;
+  const mktHome = swapped ? mk.away : mk.home;
+  const mktAway = swapped ? mk.home : mk.away;
+  const mktDraw = mk.draw;
+
+  // edge = 模型 − 市场（正=模型认为被低估=value）
+  const eH = +(m.probabilities.home_win - mktHome).toFixed(1);
+  const eD = +(m.probabilities.draw - mktDraw).toFixed(1);
+  const eA = +(m.probabilities.away_win - mktAway).toFixed(1);
+
+  const outcomes = [
+    { label: `${m.home.name_zh}胜`, model: m.probabilities.home_win, mkt: mktHome, edge: eH },
+    { label: '平局', model: m.probabilities.draw, mkt: mktDraw, edge: eD },
+    { label: `${m.away.name_zh}胜`, model: m.probabilities.away_win, mkt: mktAway, edge: eA },
+  ];
+  const best = outcomes.reduce((a,b) => b.edge > a.edge ? b : a);
+
+  const verdict = best.edge > 8 ? { txt: `★★★★★ VALUE：模型在「${best.label}」上比庄家高 ${best.edge.toFixed(1)}个点`, cls: 'up' } :
+                  best.edge > 4 ? { txt: `★★★ 小 VALUE：「${best.label}」模型高庄家 ${best.edge.toFixed(1)}个点`, cls: 'amber' } :
+                  best.edge > 1.5 ? { txt: `★★ 轻微倾向「${best.label}」(+${best.edge.toFixed(1)})`, cls: 'yellow' } :
+                                  { txt: `★ 无 edge：模型与庄家基本一致`, cls: 'muted' };
+
+  const edgeColor = e => e > 4 ? 'up font-bold' : e > 1.5 ? 'yellow' : e < -4 ? 'down' : 'muted';
+
+  return `
+    <div class="panel mb-3">
+      <div class="panel-hdr px-3 py-1.5 flex justify-between items-center">
+        <span class="amber mono font-bold text-xs">ODDS COMPARE · 模型 vs 庄家 · ${m.id}</span>
+        <span class="up mono text-xs">● 实时盘口 · ${mk.books} 家书商去水</span>
+      </div>
+      <div class="p-4">
+        <!-- VERDICT -->
+        <div class="panel p-3 mb-4" style="border-color:${best.edge>4?'#26a69a':'#30363d'}">
+          <div class="muted mono text-xs mb-1">MODEL vs MARKET 判定</div>
+          <div class="${verdict.cls} mono font-bold text-sm">${verdict.txt}</div>
+          <div class="muted mono text-[10px] mt-1">edge = 模型概率 − 庄家去水后隐含概率；正 = 庄家可能低估了这个结果</div>
+        </div>
+
+        <!-- 三柱对比 -->
+        <table class="w-full mono text-xs panel">
+          <thead class="muted">
+            <tr class="row-h panel-hdr">
+              <th class="px-3 py-2 text-left">结果</th>
+              <th class="px-3 py-2 text-right">我的模型</th>
+              <th class="px-3 py-2 text-right">庄家(去水)</th>
+              <th class="px-3 py-2 text-right">EDGE</th>
+              <th class="px-3 py-2 text-left">　</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#21262d]">
+            ${outcomes.map(o => `
+              <tr>
+                <td class="px-3 py-2 white font-bold">${o.label}</td>
+                <td class="px-3 py-2 text-right white">${o.model}%</td>
+                <td class="px-3 py-2 text-right muted">${o.mkt}%</td>
+                <td class="px-3 py-2 text-right ${edgeColor(o.edge)}">${o.edge>0?'+':''}${o.edge}</td>
+                <td class="px-3 py-2"><div class="h-1.5 bg-[#21262d] w-24"><div class="h-full ${o.edge>1.5?'bg-[#26a69a]':o.edge<-1.5?'bg-[#ef5350]':'bg-[#6e7681]'}" style="width:${Math.min(100,Math.abs(o.edge)*6)}%"></div></div></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+
+        <!-- 公允赔率换算 -->
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div class="panel p-3">
+            <div class="muted mono text-xs mb-2">模型公允赔率</div>
+            <div class="grid grid-cols-3 gap-2 mono text-center">
+              <div><div class="muted text-[10px]">${m.home.code}</div><div class="up font-bold">${fairHome}</div></div>
+              <div><div class="muted text-[10px]">平</div><div class="white font-bold">${fairDraw}</div></div>
+              <div><div class="muted text-[10px]">${m.away.code}</div><div class="down font-bold">${fairAway}</div></div>
+            </div>
+          </div>
+          <div class="panel p-3">
+            <div class="muted mono text-xs mb-2">庄家隐含赔率(去水)</div>
+            <div class="grid grid-cols-3 gap-2 mono text-center">
+              <div><div class="muted text-[10px]">${m.home.code}</div><div class="white font-bold">${(100/mktHome).toFixed(2)}</div></div>
+              <div><div class="muted text-[10px]">平</div><div class="white font-bold">${(100/mktDraw).toFixed(2)}</div></div>
+              <div><div class="muted text-[10px]">${m.away.code}</div><div class="white font-bold">${(100/mktAway).toFixed(2)}</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-hdr px-3 py-1.5 amber mono font-bold text-xs">HOW TO READ</div>
+      <div class="p-3 mono text-[11px] muted leading-relaxed space-y-1">
+        <div>· 庄家概率是 <span class="white">${mk.books} 家书商去水(de-vig)后取平均</span>——剔除了博彩公司抽水，是市场真实判断</div>
+        <div>· <span class="white">EDGE</span> = 我的模型 − 庄家。正值大 = 模型认为庄家低估了这个结果 = 潜在 value</div>
+        <div>· 庄家是几千万资金投出来的，长期比业余模型准；持续为正的 edge 才有意义，单场别当真</div>
+        <div>· 不构成投注建议</div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── 启动 ──────────────────────────────────────────────
+initDaySelector();
+initShell();
+</script>
+
+</body>
+</html>

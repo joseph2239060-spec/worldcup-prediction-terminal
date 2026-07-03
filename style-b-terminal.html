@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>WORLDCUP-PREDICT // 风格B 终端</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    background: #000;
+    color: #ffb000;
+    font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .amber { color: #ffb000; }
+  .green { color: #00ff41; }
+  .red   { color: #ff3030; }
+  .dim   { color: #806000; }
+  .cyan  { color: #00ffff; }
+  .white { color: #e0e0e0; }
+  .box { border: 1px solid #ffb000; }
+  .box-dim { border: 1px solid #553c00; }
+  .box-green { border: 1px solid #00ff41; }
+  .box-red { border: 1px solid #ff3030; }
+  .box-cyan { border: 1px solid #00ffff; }
+  .blink { animation: blink 1.2s infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .scan::before {
+    content:'';
+    position:fixed; inset:0; pointer-events:none;
+    background: repeating-linear-gradient(0deg, rgba(255,176,0,0.03) 0 2px, transparent 2px 4px);
+    z-index: 100;
+  }
+  .tab-active { background: #ffb000; color: #000; }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #553c00; }
+</style>
+</head>
+<body class="min-h-screen scan">
+
+<!-- 顶部状态栏 -->
+<div class="border-b border-[#553c00] px-4 py-2 flex items-center justify-between text-xs">
+  <div class="flex items-center gap-4">
+    <span class="amber font-bold">▓▓ WORLDCUP-PREDICT v1.0.3 // PROD</span>
+    <span class="dim">|</span>
+    <span class="green">● ONLINE</span>
+    <span class="dim">|</span>
+    <span class="dim">conn: stable</span>
+    <span class="dim">|</span>
+    <span class="dim">model: poisson-v4.2 + xgb-v2.1</span>
+  </div>
+  <div class="flex items-center gap-4">
+    <span class="dim">[ 2026-06-11 03:42:18 CST ]</span>
+    <span class="green blink">●</span>
+  </div>
+</div>
+
+<!-- TAB 栏 -->
+<div class="border-b border-[#553c00] px-4 py-2 flex items-center gap-1">
+  <div class="px-4 py-1 tab-active font-bold">[ 1 ] TODAY_MATCHES</div>
+  <div class="px-4 py-1 dim hover:amber cursor-pointer">[ 2 ] PLAYER_STATUS</div>
+  <div class="px-4 py-1 dim hover:amber cursor-pointer">[ 3 ] ODDS_COMPARE</div>
+  <div class="ml-auto dim text-xs">F1:help F5:refresh ESC:exit</div>
+</div>
+
+<div class="flex" style="height: calc(100vh - 73px)">
+
+<!-- 左侧 -->
+<aside class="w-80 border-r border-[#553c00] overflow-y-auto scrollbar-thin p-3">
+  <div class="dim text-xs mb-3">┌─ MATCHES [2026-06-11] ──────────────</div>
+
+  <div class="box mb-3 p-3 cursor-pointer">
+    <div class="flex justify-between text-xs mb-1">
+      <span class="red font-bold">★ OPENING</span>
+      <span class="dim">04:00 CST</span>
+    </div>
+    <pre class="white text-xs">  MEX  vs  RSA
+  ───────────────
+  W: <span class="amber font-bold">65.3%</span>  D: 21.8%  L: 12.9%</pre>
+    <div class="mt-2 font-mono text-xs">
+      <span class="amber">█████████████</span><span class="dim">████</span><span class="cyan">██</span>
+    </div>
+  </div>
+
+  <div class="box-dim mb-3 p-3 cursor-pointer hover:border-[#ffb000]">
+    <div class="flex justify-between text-xs mb-1">
+      <span class="dim">[ GROUP D ]</span>
+      <span class="dim">07:00 CST</span>
+    </div>
+    <pre class="dim text-xs">  USA  vs  PAR
+  ───────────────
+  W: 54.1%  D: 28.0%  L: 17.9%</pre>
+  </div>
+
+  <div class="box-dim mb-3 p-3 cursor-pointer hover:border-[#ffb000]">
+    <div class="flex justify-between text-xs mb-1">
+      <span class="red">[ !!! UPSET_WARN ]</span>
+      <span class="dim">10:00 CST</span>
+    </div>
+    <pre class="dim text-xs">  BRA  vs  MAR
+  ───────────────
+  W: 62.4%  D: 22.7%  L: 14.9%</pre>
+    <div class="text-xs red mt-1">⚠ 反常: 摩洛哥赔率高估 8%</div>
+  </div>
+
+  <div class="box-dim mb-3 p-3 cursor-pointer hover:border-[#ffb000]">
+    <div class="flex justify-between text-xs mb-1">
+      <span class="dim">[ GROUP H ]</span>
+      <span class="dim">13:00 CST</span>
+    </div>
+    <pre class="dim text-xs">  GER  vs  CUW
+  ───────────────
+  W: 84.2%  D: 11.0%  L:  4.8%</pre>
+  </div>
+
+  <div class="dim text-xs mt-4">└─ 4 matches | filter: [ALL]</div>
+</aside>
+
+<!-- 右侧 -->
+<main class="flex-1 overflow-y-auto p-4 scrollbar-thin">
+
+  <!-- 头部 -->
+  <div class="box p-4 mb-4">
+    <div class="flex justify-between items-start mb-3">
+      <div>
+        <div class="text-xs dim mb-1">MATCH_ID: WC2026_M001 // GROUP_A // OPENING</div>
+        <pre class="amber font-bold text-base leading-tight">
+> 墨西哥主场优势明显，但南非反击会制造麻烦
+        </pre>
+        <div class="text-xs mt-2 dim">
+          VENUE: Estadio Azteca, Mexico City | ALT: 2240m | TEMP: 18°C | HUMID: 55%
+        </div>
+        <div class="text-xs mt-1 dim">
+          KICKOFF: 2026-06-11 04:00 CST | REF: César Ramos
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-xs dim">MODEL_CONFIDENCE</div>
+        <div class="text-3xl amber font-bold">71.0%</div>
+        <div class="text-xs dim">n=50,000 simulations</div>
+      </div>
+    </div>
+
+    <!-- 概率三栏 -->
+    <div class="grid grid-cols-3 gap-3 mt-4 text-center">
+      <div class="box p-3">
+        <div class="text-xs dim">MEX_WIN</div>
+        <div class="text-2xl amber font-bold">65.3%</div>
+        <div class="text-xs font-mono mt-1 amber">████████████░░░░░░░░</div>
+      </div>
+      <div class="box-dim p-3">
+        <div class="text-xs dim">DRAW</div>
+        <div class="text-2xl white font-bold">21.8%</div>
+        <div class="text-xs font-mono mt-1 dim">████░░░░░░░░░░░░░░░░</div>
+      </div>
+      <div class="box-cyan p-3">
+        <div class="text-xs dim">RSA_WIN</div>
+        <div class="text-2xl cyan font-bold">12.9%</div>
+        <div class="text-xs font-mono mt-1 cyan">██░░░░░░░░░░░░░░░░░░</div>
+      </div>
+    </div>
+
+    <div class="mt-3 text-xs grid grid-cols-4 gap-3">
+      <div><span class="dim">EXPECTED_SCORE:</span> <span class="amber font-bold">2:1</span></div>
+      <div><span class="dim">EXPECTED_GOALS:</span> <span class="amber font-bold">2.7</span></div>
+      <div><span class="dim">OVER_2.5:</span> <span class="green font-bold">58%</span></div>
+      <div><span class="dim">BTTS:</span> <span class="green font-bold">61%</span></div>
+    </div>
+  </div>
+
+  <!-- 4 栏卡片 -->
+  <div class="grid grid-cols-4 gap-3">
+
+    <div class="box p-3">
+      <div class="amber font-bold mb-2 text-sm">[ MODULE_1 ] WHY_MEX_WIN</div>
+      <pre class="text-xs white leading-relaxed">
+&gt; alt_2240m            +0.42
+&gt; opening_home_boost   +0.31
+&gt; H.Martín_form        +0.18
+&gt; FIFA_rank_gap=28     +0.27
+&gt; ─────────────────────────
+&gt; SCORE:               <span class="green">+1.18</span></pre>
+    </div>
+
+    <div class="box-red p-3">
+      <div class="red font-bold mb-2 text-sm">[ MODULE_2 ] MEX_DROP_RISK</div>
+      <pre class="text-xs white leading-relaxed">
+&gt; RB_Sánchez_OUT       -0.34
+&gt; CM_xG_buildup=21     -0.21
+&gt; opening_15min_GA     -0.18
+&gt; press_vs_physical    -0.15
+&gt; ─────────────────────────
+&gt; SCORE:               <span class="red">-0.88</span></pre>
+    </div>
+
+    <div class="box-cyan p-3">
+      <div class="cyan font-bold mb-2 text-sm">[ MODULE_3 ] RSA_UPSET_PATH</div>
+      <pre class="text-xs white leading-relaxed">
+&gt; Foster_speed_RB_gap  +0.39
+&gt; AFCON_counter_eff    +0.27
+&gt; GK_save_rate=78%     +0.22
+&gt; opener_draw_rate=28% +0.14
+&gt; ─────────────────────────
+&gt; SCORE:               <span class="cyan">+1.02</span></pre>
+    </div>
+
+    <div class="box p-3" style="border-color:#a855f7">
+      <div class="font-bold mb-2 text-sm" style="color:#c084fc">[ MODULE_4 ] LIVE_VARIABLES</div>
+      <pre class="text-xs white leading-relaxed">
+&gt; alt_fatigue_RSA      -12%
+&gt; travel_fatigue_22h   -8%
+&gt; humid_neutralize     ±0
+&gt; coach_exp 4:0        +0.21
+&gt; ─────────────────────────
+&gt; NET_IMPACT:          <span class="amber">+0.42</span></pre>
+    </div>
+
+  </div>
+
+  <!-- 底部日志 -->
+  <div class="box-dim p-3 mt-4">
+    <div class="dim text-xs mb-2">▌LIVE_LOG ─────────────────────────────────</div>
+    <div class="text-xs space-y-1 font-mono">
+      <div><span class="dim">[03:42:11]</span> <span class="green">✓</span> <span class="white">load monte_carlo_50k.bin (4.2 MB)</span></div>
+      <div><span class="dim">[03:42:12]</span> <span class="green">✓</span> <span class="white">fetch lineup → ZAF_starting_xi.json</span></div>
+      <div><span class="dim">[03:42:13]</span> <span class="cyan">⚡</span> <span class="cyan">apply weather: humid=55, wind=3m/s</span></div>
+      <div><span class="dim">[03:42:14]</span> <span class="red">⚠</span> <span class="red">alert: MEX.RB_Sánchez yellow_card_susp → recompute</span></div>
+      <div><span class="dim">[03:42:15]</span> <span class="green">✓</span> <span class="amber">output: MEX 65.3 / D 21.8 / RSA 12.9</span></div>
+      <div><span class="dim">[03:42:16]</span> <span class="green">✓</span> <span class="white">push → dashboard | next refresh in 60s <span class="blink amber">▌</span></span></div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+</body>
+</html>

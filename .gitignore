@@ -1,0 +1,16 @@
+# ⚠️ API key 绝不提交
+odds_config.py
+
+# 临时文件
+_*.js
+*.tmp
+__pycache__/
+
+# 视频脚本/文案(私有,不开源)
+script-*.md
+review-*.md
+口播文案-*.md
+
+# 会话/系统
+.claude/
+data_backup_*/
