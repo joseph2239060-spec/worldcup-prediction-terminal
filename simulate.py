@@ -39,10 +39,16 @@ BOLD   = '\033[1m'
 DIM    = '\033[2m'
 END    = '\033[0m'
 
-# ─── 揭幕日 4 场赛事 (λ 来自泊松回归 fit) ─────────────────
+# ─── 示例赛程 · DEMO ─────────────────────────────────────
+# ⚠️ 下面是「怎么用」的示例数据（2026 揭幕日两场），不是当天最新预测。
+#    每天的真实预测在仪表盘 index.html 和 data/matches-*.js 里。
+#    想用模型算你自己的比赛，就改下面这个 MATCHES 列表：
+#      · home / away 填两队名
+#      · lambda_home / lambda_away 填两队的「预期进球数」(λ，一般 0.5~2.5)
+#    改完直接跑： python simulate.py
 MATCHES = [
-    # ── 2026-06-11 真实揭幕日赛程（来源见 SOURCES.md）──
-    # 当天仅 2 场，均为 A 组。λ 基于核实的近期战绩+FIFA排名+主客场+海拔估算。
+    # ── 2026-06-11 揭幕日两场（示例；来源见 SOURCES.md）──
+    # λ 基于核实的近期战绩 + FIFA 排名 + 主客场 + 海拔估算。
     {"id": "WC2026_M001", "home": "🇲🇽 墨西哥", "away": "🇿🇦 南非",
      "kickoff": "2026-06-11 15:00 ET", "group": "A",
      "lambda_home": 2.00, "lambda_away": 0.70, "tag": "OPENING ★ 揭幕战"},
@@ -184,7 +190,7 @@ def main():
     print()
     print(f"{AMBER}{BOLD}╔══════════════════════════════════════════════════════════════════════════╗{END}")
     print(f"{AMBER}{BOLD}║  WCP TERMINAL · WORLD CUP PREDICT · POISSON + MONTE CARLO ENGINE          ║{END}")
-    print(f"{AMBER}{BOLD}║  Date: 2026-06-11  ·  Model: POISSON+XGB v4.2  ·  n = 50,000 per match    ║{END}")
+    print(f"{AMBER}{BOLD}║  Date: DEMO SLATE  ·  Model: POISSON+XGB v4.2  ·  n = 50,000 per match    ║{END}")
     print(f"{AMBER}{BOLD}╚══════════════════════════════════════════════════════════════════════════╝{END}")
     print()
 
@@ -207,7 +213,7 @@ def main():
     # 汇总
     print()
     print(f"{AMBER}{BOLD}═══════════════════════════════════════════════════════════════════════════{END}")
-    print(f"{AMBER}{BOLD}  DAILY SUMMARY · 2026-06-11{END}")
+    print(f"{AMBER}{BOLD}  DEMO SUMMARY · 揭幕日示例（改 MATCHES 换成你要的比赛）{END}")
     print(f"{AMBER}{BOLD}═══════════════════════════════════════════════════════════════════════════{END}")
     print(f"  {'MATCH':<32}  {'HOME':>7} {'DRAW':>7} {'AWAY':>7}  {'EXP':>5}  {'O2.5':>6}")
     print(f"  {GRAY}{'─' * 73}{END}")
