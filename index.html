@@ -783,10 +783,10 @@ function renderOddsTab(m) {
   ];
   const best = outcomes.reduce((a,b) => b.edge > a.edge ? b : a);
 
-  const verdict = best.edge > 8 ? { txt: `★★★★★ VALUE：模型在「${best.label}」上比庄家高 ${best.edge.toFixed(1)}个点`, cls: 'up' } :
-                  best.edge > 4 ? { txt: `★★★ 小 VALUE：「${best.label}」模型高庄家 ${best.edge.toFixed(1)}个点`, cls: 'amber' } :
-                  best.edge > 1.5 ? { txt: `★★ 轻微倾向「${best.label}」(+${best.edge.toFixed(1)})`, cls: 'yellow' } :
-                                  { txt: `★ 无 edge：模型与庄家基本一致`, cls: 'muted' };
+  const verdict = best.edge > 8 ? { txt: `★★★★★ 模型 vs 庄家分歧大：${best.label} +${best.edge.toFixed(1)}%`, cls: 'up' } :
+                  best.edge > 4 ? { txt: `★★★ 模型 vs 庄家有分歧：${best.label} +${best.edge.toFixed(1)}%`, cls: 'amber' } :
+                  best.edge > 1.5 ? { txt: `★★ 模型 vs 庄家分歧：${best.label} +${best.edge.toFixed(1)}%`, cls: 'yellow' } :
+                                  { txt: `★ 模型与庄家基本一致`, cls: 'muted' };
 
   const edgeColor = e => e > 4 ? 'up font-bold' : e > 1.5 ? 'yellow' : e < -4 ? 'down' : 'muted';
 
