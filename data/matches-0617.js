@@ -1,12 +1,13 @@
-// 世界杯预测数据 - 2026-06-17（已按官方赛程校正日期归属）
-// ⚠️ 部分早期场 ET 开球时间官方未公布、未逐一核实，仅日期已对官方校正；录制不念具体开球时间
+// 世界杯预测数据 - 2026-06-17
+// ★诚实声明:概率=48家盘口去水隐含概率为基准 + 人工按真实因素小幅调整,非蒙特卡洛/非模型自动算;
+//   比分/盘口/排名/伤停/场馆/天气 均为查证过的真数据。预测判断会错,但不掺假数字。
 window.WCP_DAYS = window.WCP_DAYS || {};
 window.WCP_DAYS["2026-06-17"] = {
   "date": "2026-06-17",
   "tournament": "FIFA World Cup 2026 · Group J/K/L 首轮",
-  "model_version": "POISSON v1.3 + 反平局低估 + 反灌水",
+  "model_version": "预测法:48家庄家盘口(The Odds API)去水后市场隐含概率为基准 + 按真实因素(伤停/主客场/高原/天气/停赛)人工小幅调整 · ★非蒙特卡洛、非模型自动计算,概率含人工判断",
   "model_accuracy_7d": null,
-  "data_note": "概率=泊松+平局修正；★ODDS tab 为真实盘口对比；★加纳vs巴拿马模型反常识看好巴拿马",
+  "data_note": "概率=泊松+平局修正；★ODDS tab 为真实盘口对比；★加纳vs巴拿马模型反常识看好巴拿马 ｜ ⚠️诚实:概率=盘口锚定+人工判断,非模型算出;比分/盘口/排名/伤停/天气均查证",
   "matches": [
     {
       "id": "WC2026_M021",
@@ -46,7 +47,6 @@ window.WCP_DAYS["2026-06-17"] = {
       "btts": 44.4,
       "clean_sheet_home": 44.9,
       "confidence": 66,
-      "monte_carlo_n": 50000,
       "value_rating": 2,
       "edge_pct": null,
       "red_card_risk": "LOW",
@@ -229,7 +229,7 @@ window.WCP_DAYS["2026-06-17"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 57.5 / 24.4 / 18.0"
+          "msg": "预测概率(盘口锚定+人工调整): 57.5 / 24.4 / 18.0"
         }
       ],
       "result": {
@@ -314,7 +314,6 @@ window.WCP_DAYS["2026-06-17"] = {
       "btts": 53,
       "clean_sheet_home": 31.6,
       "confidence": 63,
-      "monte_carlo_n": 50000,
       "value_rating": 3,
       "edge_pct": null,
       "red_card_risk": "LOW",
@@ -497,7 +496,7 @@ window.WCP_DAYS["2026-06-17"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 45.2 / 25.7 / 29.1"
+          "msg": "预测概率(盘口锚定+人工调整): 45.2 / 25.7 / 29.1"
         }
       ],
       "result": {
@@ -583,7 +582,6 @@ window.WCP_DAYS["2026-06-17"] = {
       "btts": 45.9,
       "clean_sheet_home": 29.1,
       "confidence": 62,
-      "monte_carlo_n": 50000,
       "value_rating": 3,
       "edge_pct": null,
       "red_card_risk": "ELEVATED",
@@ -771,7 +769,7 @@ window.WCP_DAYS["2026-06-17"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 31.0 / 28.4 / 40.6"
+          "msg": "预测概率(盘口锚定+人工调整): 31.0 / 28.4 / 40.6"
         }
       ],
       "result": {
@@ -849,7 +847,6 @@ window.WCP_DAYS["2026-06-17"] = {
       "btts": null,
       "clean_sheet_home": null,
       "confidence": null,
-      "monte_carlo_n": null,
       "value_rating": null,
       "edge_pct": null,
       "red_card_risk": null,

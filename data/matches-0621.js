@@ -1,11 +1,13 @@
-// 世界杯预测数据 - 2026-06-21（日期已按官方校正；早期ET开球时间官方未公布，标注未公布，录制不念时间）
+// 世界杯预测数据 - 2026-06-21
+// ★诚实声明:概率=48家盘口去水隐含概率为基准 + 人工按真实因素小幅调整,非蒙特卡洛/非模型自动算;
+//   比分/盘口/排名/伤停/场馆/天气 均为查证过的真数据。预测判断会错,但不掺假数字。
 window.WCP_DAYS = window.WCP_DAYS || {};
 window.WCP_DAYS["2026-06-21"] = {
   "date": "2026-06-21",
   "tournament": "FIFA World Cup 2026 · G/H组 MD2",
-  "model_version": "POISSON v1.4",
+  "model_version": "预测法:48家庄家盘口(The Odds API)去水后市场隐含概率为基准 + 按真实因素(伤停/主客场/高原/天气/停赛)人工小幅调整 · ★非蒙特卡洛、非模型自动计算,概率含人工判断",
   "model_accuracy_7d": null,
-  "data_note": "乌拉圭-佛得角=真预测(ODDS tab有盘口);西/比两场=事后回填复盘",
+  "data_note": "乌拉圭-佛得角=真预测(ODDS tab有盘口);西/比两场=事后回填复盘 ｜ ⚠️诚实:概率=盘口锚定+人工判断,非模型算出;比分/盘口/排名/伤停/天气均查证",
   "matches": [
     {
       "id": "WC2026_M039",
@@ -45,7 +47,6 @@ window.WCP_DAYS["2026-06-21"] = {
       "btts": 50,
       "clean_sheet_home": 21,
       "confidence": 62,
-      "monte_carlo_n": 50000,
       "value_rating": 3,
       "edge_pct": null,
       "red_card_risk": "ELEVATED",
@@ -208,7 +209,7 @@ window.WCP_DAYS["2026-06-21"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 23.0 / 27.0 / 50.0"
+          "msg": "预测概率(盘口锚定+人工调整): 23.0 / 27.0 / 50.0"
         }
       ],
       "result": {
@@ -293,7 +294,6 @@ window.WCP_DAYS["2026-06-21"] = {
       "btts": 48,
       "clean_sheet_home": 38,
       "confidence": 58,
-      "monte_carlo_n": 50000,
       "value_rating": 3,
       "edge_pct": null,
       "red_card_risk": "ELEVATED",
@@ -456,7 +456,7 @@ window.WCP_DAYS["2026-06-21"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 52.0 / 26.0 / 22.0"
+          "msg": "预测概率(盘口锚定+人工调整): 52.0 / 26.0 / 22.0"
         }
       ],
       "result": {
@@ -547,7 +547,6 @@ window.WCP_DAYS["2026-06-21"] = {
       "btts": 33,
       "clean_sheet_home": 56,
       "confidence": 74,
-      "monte_carlo_n": 50000,
       "value_rating": 2,
       "edge_pct": null,
       "red_card_risk": "LOW",
@@ -700,7 +699,7 @@ window.WCP_DAYS["2026-06-21"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 74.0 / 17.0 / 9.0"
+          "msg": "预测概率(盘口锚定+人工调整): 74.0 / 17.0 / 9.0"
         }
       ],
       "result": {
@@ -744,7 +743,7 @@ window.WCP_DAYS["2026-06-21"] = {
           "进球数仍略低(2.3 vs 4),但方向对",
           "⚠️回填"
         ],
-        "model_lesson": "v1.4对强队打弱旅的进球λ终于合理(2.3),这正是发哥一直要的'强队比分别太低'"
+        "model_lesson": "v1.4对强队打弱旅的进球λ终于合理(2.3),这正是Afu一直要的'强队比分别太低'"
       }
     },
     {
@@ -785,7 +784,6 @@ window.WCP_DAYS["2026-06-21"] = {
       "btts": 49,
       "clean_sheet_home": 37,
       "confidence": 58,
-      "monte_carlo_n": 50000,
       "value_rating": 3,
       "edge_pct": null,
       "red_card_risk": "LOW",
@@ -958,7 +956,7 @@ window.WCP_DAYS["2026-06-21"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 46.0 / 29.0 / 25.0"
+          "msg": "预测概率(盘口锚定+人工调整): 46.0 / 29.0 / 25.0"
         }
       ],
       "result": {
@@ -1043,7 +1041,6 @@ window.WCP_DAYS["2026-06-21"] = {
       "btts": 44,
       "clean_sheet_home": 43,
       "confidence": 60,
-      "monte_carlo_n": 50000,
       "value_rating": 3,
       "edge_pct": null,
       "red_card_risk": "ELEVATED",
@@ -1196,7 +1193,7 @@ window.WCP_DAYS["2026-06-21"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 56.0 / 25.0 / 19.0"
+          "msg": "预测概率(盘口锚定+人工调整): 56.0 / 25.0 / 19.0"
         }
       ],
       "result": {

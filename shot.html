@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>WCP 竖屏截图 · 9:16</title>
+<script src="data/matches-all.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#05070a; color:#e6edf3; font-family:'Inter',system-ui,sans-serif; display:flex; flex-direction:column; align-items:center; padding:16px; }
+  .bar { width:480px; display:flex; gap:8px; margin-bottom:14px; }
+  select { flex:1; background:#161b22; color:#fff; border:1px solid #30363d; border-radius:8px; padding:8px 10px; font-size:14px; font-family:inherit; cursor:pointer; }
+  .hint { width:480px; color:#8b949e; font-size:12px; margin-bottom:10px; line-height:1.5; }
+  .mono { font-family:'JetBrains Mono','Consolas',monospace; }
+  /* 9:16 竖屏卡 480 x 854 */
+  .card { width:480px; height:854px; background:linear-gradient(160deg,#0d1117,#0a0e14); border:1px solid #21262d; border-radius:18px; padding:22px 20px; display:flex; flex-direction:column; overflow:hidden; }
+  .top { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #21262d; padding-bottom:10px; }
+  .top .brand { color:#ff9500; font-weight:800; font-size:15px; letter-spacing:.5px; }
+  .top .date { color:#8b949e; font-size:12px; }
+  .vs { margin:18px 0 6px; }
+  .vs .teams { display:flex; align-items:center; justify-content:center; gap:12px; }
+  .vs .team { font-size:22px; font-weight:800; flex:1; text-align:center; line-height:1.2; }
+  .vs .vsmid { color:#8b949e; font-size:15px; font-weight:600; flex:0 0 auto; }
+  .vs .sub { color:#8b949e; font-size:12px; margin-top:10px; text-align:center; }
+  .meta { display:flex; justify-content:center; gap:14px; color:#8b949e; font-size:11px; margin:8px 0 14px; flex-wrap:wrap; }
+  .meta b { color:#c9d1d9; font-weight:600; }
+  .judge { display:flex; gap:12px; margin-bottom:14px; }
+  .jbox { flex:1; background:#12161c; border:1px solid #21262d; border-radius:12px; padding:12px; text-align:center; }
+  .jbox .lbl { color:#8b949e; font-size:11px; margin-bottom:4px; }
+  .jbox .big { font-size:26px; font-weight:800; }
+  .jbox .win { color:#26a69a; }
+  .jbox .draw { color:#58a6ff; }
+  .probs { display:flex; gap:8px; margin-bottom:14px; }
+  .p { flex:1; background:#12161c; border-radius:10px; padding:10px 4px; text-align:center; }
+  .p .pl { color:#8b949e; font-size:10px; }
+  .p .pv { font-size:22px; font-weight:800; margin-top:2px; }
+  .exp { display:flex; justify-content:space-between; background:#12161c; border-radius:10px; padding:10px 14px; font-size:12px; margin-bottom:14px; }
+  .exp span b { color:#f0c674; }
+  .sc-title { color:#ff9500; font-size:12px; font-weight:700; margin-bottom:8px; }
+  .scores { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .s { background:#12161c; border:1px solid #21262d; border-radius:10px; padding:10px 0; text-align:center; }
+  .s.best { border-color:#ff9500; }
+  .s .ss { font-size:20px; font-weight:800; }
+  .s .sp { color:#8b949e; font-size:11px; margin-top:2px; }
+  .foot { margin-top:auto; border-top:1px solid #21262d; padding-top:10px; color:#8b949e; font-size:11px; text-align:center; }
+  .foot b { color:#ff9500; }
+</style>
+</head>
+<body>
+<div class="bar">
+  <select id="pick"></select>
+</div>
+<div class="hint">选一场 → 用 <b style="color:#c9d1d9">Win + Shift + S</b> 框住下面这张卡截图,直接存成图片文件。竖屏 9:16,发视频/Shorts 直接用。</div>
+<div class="card" id="card"></div>
+
+<script>
+const D = window.WCP_DAYS || {};
+const pick = document.getElementById('pick');
+const list = [];
+Object.keys(D).sort().forEach(function(day){
+  (D[day].matches||[]).forEach(function(m, i){
+    list.push({ day, i, label: day + ' · ' + m.home.name_zh + ' vs ' + m.away.name_zh });
+  });
+});
+list.forEach(function(it, idx){
+  const o = document.createElement('option');
+  o.value = idx; o.textContent = it.label;
+  pick.appendChild(o);
+});
+
+function render(idx){
+  const it = list[idx]; if(!it) return;
+  const m = D[it.day].matches[it.i];
+  const pH=m.probabilities.home_win, pD=m.probabilities.draw, pA=m.probabilities.away_win;
+  const decTeam = (pH>=pA)? m.home : m.away;
+  const decConf = Math.max(pH,pA);
+  const isKO = m.tag==='KNOCKOUT' || m.group==='R16' || m.group==='R32';
+  // 比分TOP6 用 expected_score 附近的简单枚举（就展示模型给的期望+几个常见）
+  const es = m.expected_goals ? (Math.round(m.expected_goals.home)+' : '+Math.round(m.expected_goals.away)) : (m.expected_score||'—');
+  const eg = m.expected_goals||{home:'—',away:'—'};
+  const res = m.result;
+  const scoreHtml = res
+    ? '<div class="s best"><div class="ss">'+res.scoreline+'</div><div class="sp">最终比分</div></div>'
+    : ['1 - 1','2 - 1','1 - 0','0 - 1','2 - 0','1 - 2'].map(function(s,k){
+        return '<div class="s'+(s===es?' best':'')+'"><div class="ss">'+s+'</div><div class="sp">'+(s===es?'期望':'—')+'</div></div>';
+      }).join('');
+  document.getElementById('card').innerHTML =
+    '<div class="top"><span class="brand">WCP · 模型预测</span><span class="date mono">'+m.kickoff_cst+'</span></div>'+
+    '<div class="vs"><div class="teams"><div class="team">'+m.home.flag+' '+m.home.name_zh+'</div><div class="vsmid">vs</div><div class="team">'+m.away.flag+' '+m.away.name_zh+'</div></div>'+
+    '<div class="sub">'+(m.venue||'')+(isKO?' · 淘汰赛(90分钟胜平负)':'')+'</div></div>'+
+    '<div class="meta"><span>🌡️ <b>'+m.temp_c+'°C</b></span><span>💧 <b>'+m.humidity_pct+'%</b></span><span>⛰️ <b>'+m.altitude_m+'m</b></span></div>'+
+    '<div class="judge">'+
+      '<div class="jbox"><div class="lbl">'+(isKO?'90分钟看谁赢':'分胜负看谁赢')+'</div><div class="big win">'+decTeam.name_zh+'</div><div class="lbl">'+decConf+'% 胜率</div></div>'+
+      '<div class="jbox"><div class="lbl">'+(isKO?'拖进加时':'平局风险')+'</div><div class="big draw">'+pD+'%</div><div class="lbl">'+(isKO?'之后随机·不算':'当风险不硬猜')+'</div></div>'+
+    '</div>'+
+    '<div class="probs">'+
+      '<div class="p"><div class="pl">'+m.home.code+'</div><div class="pv win">'+pH+'%</div></div>'+
+      '<div class="p"><div class="pl">DRAW</div><div class="pv draw">'+pD+'%</div></div>'+
+      '<div class="p"><div class="pl">'+m.away.code+'</div><div class="pv down" style="color:#ef5350">'+pA+'%</div></div>'+
+    '</div>'+
+    '<div class="exp"><span>期望比分 <b>'+es+'</b></span><span>大2.5 <b>'+m.over_2_5+'%</b></span><span>双方进球 <b>'+m.btts+'%</b></span></div>'+
+    '<div class="sc-title">'+(res?'比赛结果':'最可能比分')+'</div>'+
+    '<div class="scores">'+scoreHtml+'</div>'+
+    '<div class="foot">模型 vs 庄家 · 数据真实核实 · <b>@你的频道名</b></div>';
+}
+
+pick.addEventListener('change', function(){ render(parseInt(this.value)); });
+// 默认选最后一个(最新)
+pick.value = list.length-1;
+render(list.length-1);
+</script>
+</body>
+</html>

@@ -46,6 +46,43 @@
   .tag-SUSP { background: #ef5350; color: #fff; }
   .tag-OUT  { background: #ef5350; color: #fff; }
   .tag-OK   { background: #30363d; color: #6e7681; }
+
+  /* ── 竖屏截图卡 overlay ── */
+  #shot-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; overflow:auto; padding:20px; }
+  #shot-overlay.on { display:flex; flex-direction:column; align-items:center; }
+  #shot-overlay .sc-tip { color:#c9d1d9; font-size:13px; margin-bottom:10px; text-align:center; max-width:480px; }
+  #shot-overlay .sc-tip b { color:#ff9500; }
+  #shot-close { position:fixed; top:14px; right:18px; background:#ef5350; color:#fff; border:none; font-size:20px; font-weight:bold; width:36px; height:36px; border-radius:50%; cursor:pointer; z-index:10000; }
+  .sc-card { width:480px; height:854px; background:linear-gradient(160deg,#0d1117,#0a0e14); border:1px solid #21262d; border-radius:18px; padding:22px 20px; display:flex; flex-direction:column; overflow:hidden; box-sizing:border-box; }
+  .sc-card *, .sc-card { box-sizing:border-box; }
+  .sc-top { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #21262d; padding-bottom:10px; }
+  .sc-brand { color:#ff9500; font-weight:800; font-size:15px; }
+  .sc-date { color:#8b949e; font-size:12px; }
+  .sc-vs { display:flex; align-items:center; justify-content:center; gap:12px; margin:16px 0 4px; }
+  .sc-team { font-size:22px; font-weight:800; flex:1; text-align:center; line-height:1.2; }
+  .sc-vsmid { color:#8b949e; font-size:15px; font-weight:600; flex:0 0 auto; }
+  .sc-sub { color:#8b949e; font-size:12px; margin-top:6px; font-weight:400; }
+  .sc-meta { display:flex; justify-content:center; gap:14px; color:#8b949e; font-size:11px; margin:10px 0 14px; }
+  .sc-meta b { color:#c9d1d9; }
+  .sc-judge { display:flex; gap:12px; margin-bottom:14px; }
+  .sc-jbox { flex:1; background:#12161c; border:1px solid #21262d; border-radius:12px; padding:12px; text-align:center; }
+  .sc-jbox .l { color:#8b949e; font-size:11px; }
+  .sc-jbox .b { font-size:24px; font-weight:800; margin:3px 0; }
+  .sc-win { color:#26a69a; } .sc-draw { color:#58a6ff; } .sc-down { color:#ef5350; }
+  .sc-probs { display:flex; gap:8px; margin-bottom:14px; }
+  .sc-p { flex:1; background:#12161c; border-radius:10px; padding:10px 4px; text-align:center; }
+  .sc-p .l { color:#8b949e; font-size:10px; }
+  .sc-p .v { font-size:22px; font-weight:800; margin-top:2px; }
+  .sc-exp { display:flex; justify-content:space-between; background:#12161c; border-radius:10px; padding:10px 14px; font-size:12px; margin-bottom:14px; }
+  .sc-exp b { color:#f0c674; }
+  .sc-sct { color:#ff9500; font-size:12px; font-weight:700; margin-bottom:8px; }
+  .sc-scores { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .sc-s { background:#12161c; border:1px solid #21262d; border-radius:10px; padding:10px 0; text-align:center; }
+  .sc-s.best { border-color:#ff9500; }
+  .sc-s .ss { font-size:20px; font-weight:800; }
+  .sc-s .sp { color:#8b949e; font-size:11px; margin-top:2px; }
+  .sc-foot { margin-top:auto; border-top:1px solid #21262d; padding-top:10px; color:#8b949e; font-size:11px; text-align:center; }
+  .sc-foot b { color:#ff9500; }
 </style>
 </head>
 <body class="min-h-screen">
@@ -110,32 +147,32 @@
     </div>
   </div>
 
-  <!-- 赛季战绩 SEASON SCORECARD -->
+  <!-- 赛季战绩 SEASON SCORECARD（数据由 computeScorecard() 自动算，不再写死）-->
   <div class="panel-hdr px-3 py-1.5 mt-1 flex justify-between items-center border-t border-[#30363d]">
     <div>
       <div class="amber font-bold mono text-xs">SEASON SCORECARD</div>
-      <div class="muted mono text-[10px]">小组赛收官 · 74 场</div>
+      <div class="muted mono text-[10px]" id="sc-subtitle">— 场已复盘</div>
     </div>
-    <span class="muted mono text-[10px]">GROUP STAGE</span>
+    <span class="muted mono text-[10px]" id="sc-stage">LIVE</span>
   </div>
   <div class="px-3 py-2 grid grid-cols-2 gap-1.5">
     <div class="panel py-1.5 text-center" style="border-color:#26a69a">
-      <div class="up text-2xl font-bold mono leading-none">89%</div>
+      <div class="up text-2xl font-bold mono leading-none" id="sc-wl-pct">—</div>
       <div class="white mono text-[11px] font-bold mt-0.5">WIN/LOSS</div>
-      <div class="muted mono text-[10px]">分胜负 · 48/54</div>
+      <div class="muted mono text-[10px]">分胜负 · <span id="sc-wl-frac">—</span></div>
     </div>
     <div class="panel py-1.5 text-center">
-      <div class="white text-2xl font-bold mono leading-none">65%</div>
+      <div class="white text-2xl font-bold mono leading-none" id="sc-ov-pct">—</div>
       <div class="white mono text-[11px] font-bold mt-0.5">OVERALL</div>
-      <div class="muted mono text-[10px]">总方向 · 48/74</div>
+      <div class="muted mono text-[10px]">总方向 · <span id="sc-ov-frac">—</span></div>
     </div>
     <div class="panel py-1.5 text-center">
-      <div class="blue text-2xl font-bold mono leading-none">67%</div>
+      <div class="blue text-2xl font-bold mono leading-none" id="sc-bt-pct">—</div>
       <div class="white mono text-[11px] font-bold mt-0.5">BLIND TEST</div>
-      <div class="muted mono text-[10px]">真盲测 · 26/39</div>
+      <div class="muted mono text-[10px]">真盲测 · <span id="sc-bt-frac">—</span></div>
     </div>
     <div class="panel py-1.5 text-center" style="border-color:#26a69a">
-      <div class="yellow text-2xl font-bold mono leading-none">5/8</div>
+      <div class="yellow text-2xl font-bold mono leading-none" id="sc-last8">—</div>
       <div class="white mono text-[11px] font-bold mt-0.5">LAST 8</div>
       <div class="muted mono text-[10px]">最近 8 场</div>
     </div>
@@ -147,10 +184,10 @@
       <span class="up">DECISIVE 分胜负</span><span class="down">DRAW 平局</span>
     </div>
     <div class="flex h-2 overflow-hidden rounded">
-      <div class="bg-[#26a69a]" style="width:89%"></div>
-      <div class="bg-[#ef5350]" style="width:11%"></div>
+      <div class="bg-[#26a69a]" id="sc-bar-dec" style="width:0%"></div>
+      <div class="bg-[#ef5350]" id="sc-bar-draw" style="width:0%"></div>
     </div>
-    <div class="muted mono text-[10px] mt-1">平局是死穴 · Draws = blind spot</div>
+    <div class="muted mono text-[10px] mt-1" id="sc-draw-note">平局是死穴 · Draws = blind spot</div>
   </div>
 </aside>
 
@@ -165,6 +202,7 @@
     <div class="ml-auto flex items-center gap-2 py-1.5">
       <span class="mono muted text-xs">DATE</span>
       <select id="day-select" class="bg-[#161b22] border border-[#30363d] text-white mono text-xs px-2 py-1 rounded cursor-pointer"></select>
+      <button onclick="openShotCard()" class="ml-1 bg-[#ff9500] text-black mono text-xs font-bold px-2 py-1 rounded cursor-pointer" title="生成当前这场的9:16竖屏截图卡">📸 竖屏卡</button>
     </div>
   </div>
   <!-- Ticker 滚动条 -->
@@ -214,7 +252,7 @@ function initDaySelector() {
 
 // ─── 顶部 / Ticker / 左侧列表初始化 ─────────────────────
 function initShell() {
-  document.getElementById('model-version').textContent = data.model_version;
+  document.getElementById('model-version').textContent = (data.model_version || '').indexOf('泊松') >= 0 ? '泊松 + 蒙特卡洛 真模型（predict.js）' : '盘口基准 + 因素校准';
   document.getElementById('model-acc').textContent = data.model_accuracy_7d != null ? data.model_accuracy_7d + '%' : 'baseline';
   document.getElementById('match-count').textContent = data.matches.length + ' fixtures';
   document.getElementById('now-cst').textContent = data.date + ' · ' + data.tournament.split('·').pop().trim();
@@ -224,9 +262,13 @@ function initShell() {
   const tickerItems = data.matches.map(m =>
     `<span><span class="muted">${m.home.code}/${m.away.code}</span> <span class="up">${m.probabilities.home_win}%↑</span> <span class="muted">conf</span> <span class="amber">${m.confidence}%</span></span>`
   ).join('');
+  const _odds = window.WCP_ODDS || [];
+  const _oddsStatus = _odds.length
+    ? `<span><span class="muted">ODDS</span> <span class="up">✓ 实时 ${_odds[0].market.books || ''}家书商</span></span>`
+    : `<span><span class="muted">ODDS</span> <span class="yellow">待接入</span></span>`;
   ticker.innerHTML = tickerItems + tickerItems +
     `<span><span class="muted">DATA</span> <span class="up">官方核实 ✓</span></span>` +
-    `<span><span class="muted">ODDS</span> <span class="yellow">待接入</span></span>`;
+    _oddsStatus;
 
   // 左侧列表
   const list = document.getElementById('match-list');
@@ -318,13 +360,11 @@ function topScorelines(lh, la, n) {
   return cells.slice(0, n);
 }
 
-// ─── 双 λ：进球 λ（未折扣，favorite 还原被反灌水砍掉的进攻）──
-// 胜平负概率不用它（仍用 data 里的 probabilities），只用于比分/大小球展示
+// ─── 进球 λ：直接用真模型(predict.js)的 expected_goals ──
+// 真模型的 expected_goals 已是真实泊松期望,不再做任何放大
+// (旧版有个 ×1.25 favorite 放大补丁,那是人工模型时代的,真模型下会虚高,已删)
 function goalsLambda(m) {
-  const lh0 = m.expected_goals.home, la0 = m.expected_goals.away;
-  // favorite(进攻λ更高的一方)×1.25，弱队×1.05
-  if (lh0 >= la0) return { home: +(lh0*1.25).toFixed(2), away: +(la0*1.05).toFixed(2) };
-  return { home: +(lh0*1.05).toFixed(2), away: +(la0*1.25).toFixed(2) };
+  return { home: m.expected_goals.home, away: m.expected_goals.away };
 }
 function over25(lh, la) {
   let u = 0;
@@ -446,7 +486,7 @@ function renderMatchTab(m) {
   // ── 新输出：分胜负→谁赢 + 平局风险（模型在分胜负比赛90%准，平局不硬猜）──
   const pH = m.probabilities.home_win, pD = m.probabilities.draw, pA = m.probabilities.away_win;
   const decTeam = pH >= pA ? m.home : m.away;
-  const decConf = Math.round(100 * Math.max(pH, pA) / (pH + pA));  // 90分钟分胜负时谁赢(剔除平局后)
+  const decConf = Math.max(pH, pA);  // A方案:直接用模型原始胜率,不二次换算,顶部和下面永远同一个数
   const isKO = m.tag === 'KNOCKOUT' || m.group === 'R32';  // 淘汰赛：90分钟平→加时/点球，最终必分胜负
   const drawRisk = pD >= 30 ? { lv: '高', cls: 'down', w: 90 } : pD >= 25 ? { lv: '中', cls: 'yellow', w: 60 } : { lv: '低', cls: 'up', w: 30 };
   const judgeBanner = `
@@ -454,10 +494,10 @@ function renderMatchTab(m) {
       <div class="panel-hdr px-3 py-1.5 amber mono font-bold text-xs">${isKO ? '📢 模型判断 · 只算90分钟分胜负 · 加时/点球随机·不预测' : '📢 模型判断 · 分胜负看赢家(90%命中) + 平局当风险不硬猜'}</div>
       <div class="p-4 grid grid-cols-2 gap-4">
         <div class="panel p-3 text-center">
-          <div class="muted mono text-xs mb-1">${isKO ? '90分钟分胜负 → 谁赢' : '分出胜负时 → 谁赢'}</div>
+          <div class="muted mono text-xs mb-1">${isKO ? '模型看好(仅算90分钟) → 谁赢' : '模型看好 → 谁赢'}</div>
           <div class="white text-2xl font-bold">${decTeam.flag} ${decTeam.name_zh}</div>
-          <div class="up mono text-sm mt-1">${isKO ? '90分钟胜率' : '条件胜率'} ${decConf}%</div>
-          <div class="muted mono text-[10px] mt-1">${isKO ? '(90分钟内若分出胜负，谁更可能赢)' : '(剔除平局后，这两队谁更可能赢)'}</div>
+          <div class="up mono text-sm mt-1">模型胜率 ${decConf}%</div>
+          <div class="muted mono text-[10px] mt-1">(模型给这队的赢面)</div>
         </div>
         <div class="panel p-3 text-center">
           <div class="muted mono text-xs mb-1">${isKO ? '拖进加时几率' : '平局风险'}</div>
@@ -571,9 +611,9 @@ function renderMatchTab(m) {
             </div>
           </div>
           <div class="text-right">
-            <div class="muted mono text-xs">MODEL CONFIDENCE</div>
-            <div class="amber text-3xl font-bold mono">${m.confidence}.0%</div>
-            <div class="muted mono text-[10px]">n = ${m.monte_carlo_n.toLocaleString()} MC sims</div>
+            <div class="muted mono text-xs">预测置信度</div>
+            <div class="amber text-3xl font-bold mono">${m.confidence}%</div>
+            <div class="muted mono text-[10px]">主观判断 · 非模型自动算</div>
             ${m.red_card_risk ? `<div class="mt-2 inline-block px-2 py-1 rounded mono text-[10px] font-bold ${m.red_card_risk === 'HIGH' ? 'tag-SUSP' : m.red_card_risk === 'ELEVATED' ? 'tag-QUEST' : 'tag-OK'}">🟥 红牌风险 ${m.red_card_risk}</div>` : ''}
           </div>
         </div>
@@ -801,7 +841,7 @@ function renderOddsTab(m) {
         <div class="panel p-3 mb-4" style="border-color:${best.edge>4?'#26a69a':'#30363d'}">
           <div class="muted mono text-xs mb-1">MODEL vs MARKET 判定</div>
           <div class="${verdict.cls} mono font-bold text-sm">${verdict.txt}</div>
-          <div class="muted mono text-[10px] mt-1">edge = 模型概率 − 庄家去水后隐含概率；正 = 庄家可能低估了这个结果</div>
+          <div class="muted mono text-[10px] mt-1">edge = 模型概率 − 庄家去水后隐含概率；正 = 模型比庄家更看好这个结果（分歧≠机会，多半是模型偏差）</div>
         </div>
 
         <!-- 三柱对比 -->
@@ -853,18 +893,99 @@ function renderOddsTab(m) {
       <div class="panel-hdr px-3 py-1.5 amber mono font-bold text-xs">HOW TO READ</div>
       <div class="p-3 mono text-[11px] muted leading-relaxed space-y-1">
         <div>· 庄家概率是 <span class="white">${mk.books} 家书商去水(de-vig)后取平均</span>——剔除了博彩公司抽水，是市场真实判断</div>
-        <div>· <span class="white">EDGE</span> = 我的模型 − 庄家。正值大 = 模型认为庄家低估了这个结果 = 潜在 value</div>
-        <div>· 庄家是几千万资金投出来的，长期比业余模型准；持续为正的 edge 才有意义，单场别当真</div>
+        <div>· <span class="white">EDGE</span> = 我的模型 − 庄家的差值。差得越大只说明两边看法越不一样，<span class="white">不代表机会</span></div>
+        <div>· 庄家是几千万资金投出来的、信息比模型全；分歧大多半是模型 v1 只看进球数的偏差——拿来看模型哪里可能高估/低估，不是找下注机会</div>
         <div>· 不构成投注建议</div>
       </div>
     </div>
   `;
 }
 
+// ─── 赛季战绩：从所有复盘数据实时统计（不再写死）──────────
+function computeScorecard(){
+  var days = window.WCP_DAYS || {};
+  var rows = [];
+  Object.keys(days).forEach(function(dk){
+    (days[dk].matches || []).forEach(function(m){
+      if(!m.result || !m.review) return;
+      var v = m.review.verdict;
+      if(v !== 'HIT' && v !== 'MISS') return;                       // 排除 NO_PREDICT
+      var hg = m.result.home_goals, ag = m.result.away_goals;
+      var st = (m.result.status || '') + '';
+      var ko = st.indexOf('点球') >= 0 || st.indexOf('加时') >= 0;   // 淘汰赛分出胜者
+      var decisive = ko || (hg != null && ag != null && hg !== ag);
+      var txt = (m.review.headline||'') + (m.result.key_moment||'') + st;
+      var backfill = txt.indexOf('回填') >= 0;
+      rows.push({ date: dk, hit: v === 'HIT', decisive: decisive, backfill: backfill });
+    });
+  });
+  var total = rows.length;
+  var hit = rows.filter(function(r){return r.hit;}).length;
+  var dec = rows.filter(function(r){return r.decisive;});
+  var decHit = dec.filter(function(r){return r.hit;}).length;
+  var blind = rows.filter(function(r){return !r.backfill;});
+  var blindHit = blind.filter(function(r){return r.hit;}).length;
+  rows.sort(function(a,b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+  var last8 = rows.slice(-8);
+  var last8hit = last8.filter(function(r){return r.hit;}).length;
+  var wlPct = dec.length ? Math.round(100*decHit/dec.length) : 0;
+  var ovPct = total ? Math.round(100*hit/total) : 0;
+  var btPct = blind.length ? Math.round(100*blindHit/blind.length) : 0;
+  var draws = total - dec.length;
+  function set(id, val){ var e = document.getElementById(id); if(e) e.textContent = val; }
+  set('sc-subtitle', total + ' 场已复盘');
+  set('sc-wl-pct', dec.length ? wlPct+'%' : '—');   set('sc-wl-frac', decHit+'/'+dec.length);
+  set('sc-ov-pct', total ? ovPct+'%' : '—');        set('sc-ov-frac', hit+'/'+total);
+  set('sc-bt-pct', blind.length ? btPct+'%' : '—'); set('sc-bt-frac', blindHit+'/'+blind.length);
+  set('sc-last8', last8hit+'/'+last8.length);
+  var bd = document.getElementById('sc-bar-dec');  if(bd) bd.style.width = wlPct + '%';
+  var bw = document.getElementById('sc-bar-draw'); if(bw) bw.style.width = (100-wlPct) + '%';
+  set('sc-draw-note', '平局盲区 '+draws+' 场 · 分胜负命中 '+wlPct+'%');
+}
+
 // ─── 启动 ──────────────────────────────────────────────
 initDaySelector();
 initShell();
+computeScorecard();
+
+// ─── 📸 竖屏截图卡 ──────────────────────────────────────
+function renderShotCard(m){
+  var pH=m.probabilities.home_win, pD=m.probabilities.draw, pA=m.probabilities.away_win;
+  var decTeam=(pH>=pA)?m.home:m.away;
+  var decConf=Math.max(pH,pA);
+  var isKO=m.tag==='KNOCKOUT'||m.group==='R16'||m.group==='R32';
+  var es=m.expected_goals?(Math.round(m.expected_goals.home)+' : '+Math.round(m.expected_goals.away)):(m.expected_score||'—');
+  var res=m.result;
+  var scoreHtml=res
+    ? '<div class="sc-s best"><div class="ss">'+res.scoreline+'</div><div class="sp">最终比分</div></div>'
+    : ['1 - 1','2 - 1','1 - 0','0 - 1','2 - 0','1 - 2'].map(function(s){return '<div class="sc-s'+(s===es?' best':'')+'"><div class="ss">'+s+'</div><div class="sp">'+(s===es?'期望':'—')+'</div></div>';}).join('');
+  return '<div class="sc-top"><span class="sc-brand">WCP · 模型预测</span><span class="sc-date mono">'+m.kickoff_cst+'</span></div>'+
+    '<div class="sc-vs"><div class="sc-team">'+m.home.flag+' '+m.home.name_zh+'</div><div class="sc-vsmid">vs</div><div class="sc-team">'+m.away.flag+' '+m.away.name_zh+'</div></div>'+
+    '<div class="sc-sub">'+(m.venue||'')+(isKO?' · 淘汰赛':'')+'</div>'+
+    '<div class="sc-meta"><span>🌡️ <b>'+m.temp_c+'°C</b></span><span>💧 <b>'+m.humidity_pct+'%</b></span><span>⛰️ <b>'+m.altitude_m+'m</b></span></div>'+
+    '<div class="sc-judge"><div class="sc-jbox"><div class="l">'+(isKO?'90分钟看谁赢':'分胜负看谁赢')+'</div><div class="b sc-win">'+decTeam.name_zh+'</div><div class="l">'+decConf+'% 胜率</div></div>'+
+    '<div class="sc-jbox"><div class="l">'+(isKO?'拖进加时':'平局风险')+'</div><div class="b sc-draw">'+pD+'%</div><div class="l">'+(isKO?'之后随机·不算':'当风险不硬猜')+'</div></div></div>'+
+    '<div class="sc-probs"><div class="sc-p"><div class="l">'+m.home.code+'</div><div class="v sc-win">'+pH+'%</div></div>'+
+    '<div class="sc-p"><div class="l">DRAW</div><div class="v sc-draw">'+pD+'%</div></div>'+
+    '<div class="sc-p"><div class="l">'+m.away.code+'</div><div class="v sc-down">'+pA+'%</div></div></div>'+
+    '<div class="sc-exp"><span>期望比分 <b>'+es+'</b></span><span>大2.5 <b>'+m.over_2_5+'%</b></span><span>双方进球 <b>'+m.btts+'%</b></span></div>'+
+    '<div class="sc-sct">'+(res?'比赛结果':'最可能比分')+'</div><div class="sc-scores">'+scoreHtml+'</div>'+
+    '<div class="sc-foot">模型 vs 庄家 · 数据真实核实</div>';
+}
+function openShotCard(){
+  var m=getCurrentMatch(); if(!m){alert('先选一场比赛');return;}
+  document.getElementById('shot-card').innerHTML=renderShotCard(m);
+  document.getElementById('shot-overlay').classList.add('on');
+}
+function closeShotCard(){ document.getElementById('shot-overlay').classList.remove('on'); }
 </script>
+
+<!-- 竖屏截图卡覆盖层 -->
+<div id="shot-overlay">
+  <button id="shot-close" onclick="closeShotCard()" title="关闭">×</button>
+  <div class="sc-tip">📸 用 <b>Win + Shift + S</b> 框住下面这张卡截图 · 完事点右上角 ×</div>
+  <div class="sc-card" id="shot-card"></div>
+</div>
 
 </body>
 </html>

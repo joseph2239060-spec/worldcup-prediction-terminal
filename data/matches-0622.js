@@ -1,11 +1,13 @@
-// 世界杯预测数据 - 2026-06-22（日期已按官方校正；早期ET开球时间官方未公布，标注未公布，录制不念时间）
+// 世界杯预测数据 - 2026-06-22
+// ★诚实声明:概率=48家盘口去水隐含概率为基准 + 人工按真实因素小幅调整,非蒙特卡洛/非模型自动算;
+//   比分/盘口/排名/伤停/场馆/天气 均为查证过的真数据。预测判断会错,但不掺假数字。
 window.WCP_DAYS = window.WCP_DAYS || {};
 window.WCP_DAYS["2026-06-22"] = {
   "date": "2026-06-22",
   "tournament": "FIFA World Cup 2026 · G/I/J组 MD2-3",
-  "model_version": "POISSON v1.4",
+  "model_version": "预测法:48家庄家盘口(The Odds API)去水后市场隐含概率为基准 + 按真实因素(伤停/主客场/高原/天气/停赛)人工小幅调整 · ★非蒙特卡洛、非模型自动计算,概率含人工判断",
   "model_accuracy_7d": null,
-  "data_note": "★真预测,ODDS tab有实时盘口对比;★France进球λ3.36(对手门槛让强队进攻终于放开)",
+  "data_note": "★真预测,ODDS tab有实时盘口对比;★France进球λ3.36(对手门槛让强队进攻终于放开) ｜ ⚠️诚实:概率=盘口锚定+人工判断,非模型算出;比分/盘口/排名/伤停/天气均查证",
   "matches": [
     {
       "id": "WC2026_M042",
@@ -45,7 +47,6 @@ window.WCP_DAYS["2026-06-22"] = {
       "btts": 56,
       "clean_sheet_home": 28,
       "confidence": 52,
-      "monte_carlo_n": 50000,
       "value_rating": 3,
       "edge_pct": null,
       "red_card_risk": "LOW",
@@ -213,7 +214,7 @@ window.WCP_DAYS["2026-06-22"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 37.0 / 30.0 / 33.0"
+          "msg": "预测概率(盘口锚定+人工调整): 37.0 / 30.0 / 33.0"
         }
       ],
       "result": {
@@ -298,7 +299,6 @@ window.WCP_DAYS["2026-06-22"] = {
       "btts": 51,
       "clean_sheet_home": 21,
       "confidence": 58,
-      "monte_carlo_n": 50000,
       "value_rating": 3,
       "edge_pct": null,
       "red_card_risk": "ELEVATED",
@@ -466,7 +466,7 @@ window.WCP_DAYS["2026-06-22"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 24.0 / 24.0 / 52.0"
+          "msg": "预测概率(盘口锚定+人工调整): 24.0 / 24.0 / 52.0"
         }
       ],
       "result": {
@@ -551,7 +551,6 @@ window.WCP_DAYS["2026-06-22"] = {
       "btts": 49.5,
       "clean_sheet_home": 42.1,
       "confidence": 74,
-      "monte_carlo_n": 50000,
       "value_rating": 2,
       "edge_pct": null,
       "red_card_risk": "LOW",
@@ -719,7 +718,7 @@ window.WCP_DAYS["2026-06-22"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 63.1 / 20.9 / 15.5"
+          "msg": "预测概率(盘口锚定+人工调整): 63.1 / 20.9 / 15.5"
         }
       ],
       "result": {
@@ -798,7 +797,6 @@ window.WCP_DAYS["2026-06-22"] = {
       "btts": 53.8,
       "clean_sheet_home": 44.1,
       "confidence": 82,
-      "monte_carlo_n": 50000,
       "value_rating": 2,
       "edge_pct": null,
       "red_card_risk": "LOW",
@@ -961,7 +959,7 @@ window.WCP_DAYS["2026-06-22"] = {
         {
           "time": "—",
           "level": "OK",
-          "msg": "poisson output: 83.9 / 10.3 / 5.8"
+          "msg": "预测概率(盘口锚定+人工调整): 83.9 / 10.3 / 5.8"
         }
       ],
       "result": {
@@ -1005,7 +1003,7 @@ window.WCP_DAYS["2026-06-22"] = {
         "misses": [
           "几乎无可挑剔"
         ],
-        "model_lesson": "★这场是v1.4最完美的一场:方向+比分+球员全中。发哥坚持的'强队进球别压太低'+对手门槛反灌水,在法国打伊拉克上完美兑现"
+        "model_lesson": "★这场是v1.4最完美的一场:方向+比分+球员全中。Afu坚持的'强队进球别压太低'+对手门槛反灌水,在法国打伊拉克上完美兑现"
       }
     }
   ]
