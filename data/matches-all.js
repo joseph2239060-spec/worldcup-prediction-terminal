@@ -25320,7 +25320,56 @@ window.WCP_DAYS["2026-07-11"] = {
           "level": "OK",
           "msg": "蒙特卡洛5万次输出: 29 / 20 / 51 · 最可能1-2(8%)"
         }
-      ]
+      ],
+      "result": {
+        "status": "AET",
+        "home_goals": 1,
+        "away_goals": 2,
+        "scoreline": "1 - 2（加时）",
+        "scorers": [
+          {
+            "min": "36'",
+            "team": "NOR",
+            "player": "Schjelderup",
+            "type": "挪威半射半传吊过门将 → 1-0"
+          },
+          {
+            "min": "45+2'",
+            "team": "ENG",
+            "player": "Bellingham",
+            "type": "上半场尾扳平 → 1-1"
+          },
+          {
+            "min": "93'",
+            "team": "ENG",
+            "player": "Bellingham",
+            "type": "加时补射梅开二度绝杀 → 1-2"
+          }
+        ],
+        "red_cards": [],
+        "stats": {
+          "shots_home": null,
+          "shots_on_target_home": null,
+          "poss_home": null,
+          "poss_away": null
+        },
+        "key_moment": "英格兰2-1挪威(加时晋级4强)。挪威Schjelderup 36'先进球,Bellingham 45+2'扳平、93'加时补射梅开二度绝杀。模型押英格兰51%→方向对,期望比分1-2也正好判准,但过程惊险(挪威先进、拖进加时)",
+        "source": "ESPN/NBC/CNN"
+      },
+      "review": {
+        "verdict": "HIT",
+        "headline": "★方向+比分双对:英格兰51%→2-1,期望1-2判准。共识场,但挪威先进球、拖加时才赢,Bellingham双响",
+        "hits": [
+          "★方向对:模型英格兰51%(最高)→英格兰晋级 ✓(防穿越真盲测)",
+          "★比分判准:模型期望1-2,实际正好挪威1-英格兰2",
+          "模型给挪威29%(庄家23)略高,挪威确实先进球有威胁,判断不差"
+        ],
+        "misses": [
+          "没料到这么险:挪威36'先进、英格兰落后到45'才扳平、93'加时才绝杀,模型给英51%没体现'要拖加时'",
+          "Bellingham加时绝杀这种剧情,模型只给最终概率、算不出"
+        ],
+        "model_lesson": "共识场(模型51 vs 庄家50.6)方向+比分双对,稳。但过程比数字惊险——挪威先进球、拖进加时。诚实:模型只给最终谁赢,算不出'谁先进、会不会拖加时';好在方向和比分数字都对。英格兰整体实力兑现(Bellingham双响),挪威搏杀到加时"
+      }
     },
     {
       "id": "WC2026_QF_04",
@@ -25514,6 +25563,358 @@ window.WCP_DAYS["2026-07-11"] = {
           "level": "OK",
           "msg": "蒙特卡洛5万次输出: 39 / 25 / 36 · 最可能1-1(12%)"
         }
+      ],
+      "result": {
+        "status": "AET",
+        "home_goals": 3,
+        "away_goals": 1,
+        "scoreline": "3 - 1（加时）",
+        "scorers": [
+          {
+            "min": "10'",
+            "team": "ARG",
+            "player": "Mac Allister",
+            "type": "Messi角球头球近角破门 → 1-0"
+          },
+          {
+            "min": "67'",
+            "team": "SUI",
+            "player": "Ndoye",
+            "type": "穿裆马丁内斯扳平 → 1-1"
+          },
+          {
+            "min": "112'",
+            "team": "ARG",
+            "player": "Julián Álvarez",
+            "type": "加时世界波 → 2-1"
+          },
+          {
+            "min": "120+1'",
+            "team": "ARG",
+            "player": "Lautaro",
+            "type": "加时补射锁定 → 3-1"
+          }
+        ],
+        "red_cards": [
+          {
+            "min": "72'",
+            "team": "SUI",
+            "player": "Embolo",
+            "type": "假摔两黄下场,瑞士剩10人"
+          }
+        ],
+        "stats": {
+          "shots_home": null,
+          "shots_on_target_home": null,
+          "poss_home": null,
+          "poss_away": null
+        },
+        "key_moment": "阿根廷3-1瑞士(加时,瑞士10人)晋级4强。90分钟1-1(Mac Allister 10'接Messi角球 vs Ndoye 67'),Embolo 72'假摔两黄下场,加时Julián Álvarez 112'世界波+Lautaro 120+1'锁定。模型押阿根廷39%(最高)→方向对,'易加时'判断也对(90分钟平);但模型给瑞士36%偏高,瑞士没爆冷",
+        "source": "ESPN/CNN/Euronews"
+      },
+      "review": {
+        "verdict": "HIT",
+        "headline": "★大分歧场:模型给瑞士36%偏高,但阿根廷39%仍最高→阿根廷3-1(加时)。赛前风险警告被验证:瑞士没爆冷,该信盘口方向",
+        "hits": [
+          "★方向对:模型阿根廷39%(三选一最高)→阿根廷晋级 ✓(防穿越真盲测)",
+          "★'接近五五、易加时'判对:90分钟1-1、真拖进加时(模型赛前就说易加时/点球)",
+          "阿根廷卫冕冠军底蕴兑现(加时Julián Álvarez世界波+Lautaro锁定)"
+        ],
+        "misses": [
+          "★模型给瑞士36%偏高(庄家才16.7):瑞士没爆冷、阿根廷3-1,庄家方向更准——我赛前标的'大分歧多半是模型高估瑞士'风险警告,这次被验证对了",
+          "方向是侥幸保住的:阿根廷39%仅比瑞士36%高3%,若模型再高估瑞士一点(反超)方向就错了",
+          "瑞士Embolo 72'假摔红牌是偶然变量,加速了崩盘"
+        ],
+        "model_lesson": "'大分歧场'的重要一课:模型给瑞士36%(庄家16.7)确实高估了——和高估美国同源的病(看瑞士进球数据好就给高),结果瑞士没爆冷、阿根廷3-1。好在模型阿根廷39%仍最高、方向侥幸没错,但这是'高估了瑞士却没到反超'才保住的,危险。再次确认铁律:模型和庄家大分歧时,信盘口的方向,模型的高估要打折看。唯一给模型记一功的是'接近五五、易加时'判对(90分钟1-1真拖加时)"
+      }
+    }
+  ]
+};
+
+
+// ══════════════════ matches-0714.js ══════════════════
+// 世界杯预测数据 - 2026-07-14（★半决赛 SF：真模型 predict.js 泊松+蒙特卡洛5万次，防穿越 cutoff 7/14）
+// 概率=真模型算出，不是人工拍；强度来自各队本届真实比分；比分/盘口/排名/天气均查证
+window.WCP_DAYS = window.WCP_DAYS || {};
+window.WCP_DAYS["2026-07-14"] = {
+  "date": "2026-07-14",
+  "tournament": "FIFA World Cup 2026 · 半决赛 Semi-final",
+  "model_version": "泊松乘法模型 + 真蒙特卡洛5万次(predict.js 真跑,防穿越:只用赛前真实比分算强度) · 会错但每个数字真算出来",
+  "model_accuracy_7d": null,
+  "data_note": "★真模型预测:泊松+蒙特卡洛5万次(predict.js真跑,cutoff到7/14、含R16+八强结果算强度),强度来自各队本届真实进球;再对49家庄家盘口看分歧。天气=open-meteo 实时预报",
+  "matches": [
+    {
+      "id": "WC2026_SF_01",
+      "kickoff_cst": "2026-07-14 15:00 ET",
+      "group": "SF",
+      "round": 7,
+      "tag": "KNOCKOUT",
+      "home": {
+        "code": "FRA",
+        "name_zh": "法国",
+        "flag": "🇫🇷",
+        "fifa_rank": 2
+      },
+      "away": {
+        "code": "ESP",
+        "name_zh": "西班牙",
+        "flag": "🇪🇸",
+        "fifa_rank": 3
+      },
+      "venue": "AT&T Stadium, 阿灵顿",
+      "altitude_m": 180,
+      "temp_c": 32,
+      "humidity_pct": 46,
+      "referee": "未公布",
+      "headline": "模型 法国35%/平36%/西班牙29%:两大铁防对撞(法国失0.33、西班牙整届失0.17)→模型算低比分僵局、最可能0-0(21%)、平局概率最高、易拖加时。庄家法国41%略高,模型更看重平局。AT&T室内空调场",
+      "probabilities": {
+        "home_win": 35,
+        "draw": 36,
+        "away_win": 29
+      },
+      "expected_goals": {
+        "home": 0.83,
+        "away": 0.73
+      },
+      "expected_score": "1 : 1",
+      "over_2_5": 21,
+      "btts": 29,
+      "clean_sheet_home": 48,
+      "confidence": 36,
+      "value_rating": 2,
+      "edge_pct": null,
+      "red_card_risk": "NORMAL",
+      "modules": {
+        "home_win_reasons": {
+          "score": 0.5,
+          "items": [
+            {
+              "label": "FRA_firepower",
+              "value": "+",
+              "note": "法国Mbappé/Dembélé火力,本届场均进2.67球,反击效率高"
+            },
+            {
+              "label": "FRA_balance",
+              "value": "+",
+              "note": "攻防均衡,失0.33/场,Maignan+后防稳"
+            }
+          ]
+        },
+        "home_risk": {
+          "score": -0.5,
+          "items": [
+            {
+              "label": "ESP_defense",
+              "value": "-",
+              "note": "★西班牙整届失0.17、铁防天花板,极难打穿(半决赛前只丢1球)"
+            },
+            {
+              "label": "ESP_control",
+              "value": "-",
+              "note": "Yamal/Pedri传控磨人,控球压缩法国反击空间"
+            },
+            {
+              "label": "low_score",
+              "value": "±",
+              "note": "★两队都铁防→低比分,谁先进谁占心理优势"
+            }
+          ]
+        },
+        "away_upset_path": {
+          "score": 0.4,
+          "items": [
+            {
+              "label": "vs_market",
+              "value": "一致",
+              "note": "模型给西班牙29% vs 庄家29.5%,一致;分歧在平局(模型36% vs 庄家29%,模型更看重僵局)"
+            },
+            {
+              "label": "Yamal_Pedri",
+              "value": "+",
+              "note": "Yamal边路爆点+Pedri中场统治,是西班牙破铁桶的钥匙"
+            }
+          ]
+        },
+        "live_variables": {
+          "score": 0,
+          "items": [
+            {
+              "label": "draw_high",
+              "value": "★",
+              "note": "★模型平局36%最高、最可能0-0(21%)——两大铁防最易踢成僵局、拖进加时/点球"
+            },
+            {
+              "label": "heat",
+              "value": "±",
+              "note": "AT&T可开合顶+空调,32°C高温对场内影响小,利技术流"
+            }
+          ]
+        }
+      },
+      "players": {
+        "home": [
+          { "name": "Kylian Mbappé", "pos": "ST", "status": "HOT", "note": "火力核心" },
+          { "name": "Ousmane Dembélé", "pos": "RW", "status": "OK", "note": "边路爆点" },
+          { "name": "Aurélien Tchouaméni", "pos": "CM", "status": "KEY", "note": "中场屏障" },
+          { "name": "Mike Maignan", "pos": "GK", "status": "OK", "note": "门线稳" }
+        ],
+        "away": [
+          { "name": "Lamine Yamal", "pos": "RW", "status": "HOT", "note": "边路爆点" },
+          { "name": "Pedri", "pos": "CM", "status": "KEY", "note": "节拍器" },
+          { "name": "Nico Williams", "pos": "LW", "status": "OK", "note": "速度突破" },
+          { "name": "Álvaro Morata", "pos": "ST", "status": "OK", "note": "终结点" }
+        ]
+      },
+      "odds": [
+        { "book": "实时盘口见ODDS tab", "home": null, "draw": null, "away": null, "edge_pct": null }
+      ],
+      "live_log": [
+        { "time": "—", "level": "OK", "msg": "★真模型:泊松+蒙特卡洛真跑5万次,强度=各队本届真实进球(防穿越cutoff7/14,含R16+八强)" },
+        { "time": "—", "level": "OK", "msg": "FIFA rank FRA#2 ESP#3" },
+        { "time": "—", "level": "WARN", "msg": "★模型 35/36/29 vs 庄家 41.1/29.4/29.5:法国favored一致,但模型更看重平局(两铁防)" },
+        { "time": "—", "level": "OK", "msg": "蒙特卡洛5万次输出: 35 / 36 / 29 · 最可能0-0(21%)" }
+      ]
+    }
+  ]
+};
+
+
+// ══════════════════ matches-0715.js ══════════════════
+// 世界杯预测数据 - 2026-07-15（★半决赛 SF：真模型 predict.js 泊松+蒙特卡洛5万次，防穿越 cutoff 7/15）
+// 概率=真模型算出，不是人工拍；强度来自各队本届真实比分；比分/盘口/排名/天气均查证
+window.WCP_DAYS = window.WCP_DAYS || {};
+window.WCP_DAYS["2026-07-15"] = {
+  "date": "2026-07-15",
+  "tournament": "FIFA World Cup 2026 · 半决赛 Semi-final",
+  "model_version": "泊松乘法模型 + 真蒙特卡洛5万次(predict.js 真跑,防穿越:只用赛前真实比分算强度) · 会错但每个数字真算出来",
+  "model_accuracy_7d": null,
+  "data_note": "★真模型预测:泊松+蒙特卡洛5万次(predict.js真跑,cutoff到7/15、含R16+八强结果算强度),强度来自各队本届真实进球;再对49家庄家盘口看分歧(分歧大多半是模型偏差,当风险信号不当机会)。天气=open-meteo 实时预报",
+  "matches": [
+    {
+      "id": "WC2026_SF_02",
+      "kickoff_cst": "2026-07-15 15:00 ET",
+      "group": "SF",
+      "round": 7,
+      "tag": "KNOCKOUT",
+      "home": {
+        "code": "ENG",
+        "name_zh": "英格兰",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "fifa_rank": 4
+      },
+      "away": {
+        "code": "ARG",
+        "name_zh": "阿根廷",
+        "flag": "🇦🇷",
+        "fifa_rank": 1
+      },
+      "venue": "Mercedes-Benz Stadium, 亚特兰大",
+      "altitude_m": 320,
+      "temp_c": 31,
+      "humidity_pct": 48,
+      "referee": "未公布",
+      "headline": "模型 英格兰33%/平22%/阿根廷45%:模型看阿根廷火力(本届场均2.83球)给阿根廷favored;但庄家给英格兰36.7%略高、阿根廷仅31.2%——★模型 vs 庄家方向相反(阿根廷+14),多半是模型高估阿根廷进攻,当风险信号看。英阿宿敌世纪对决,亚特兰大室内空调场",
+      "probabilities": {
+        "home_win": 33,
+        "draw": 22,
+        "away_win": 45
+      },
+      "expected_goals": {
+        "home": 1.59,
+        "away": 1.90
+      },
+      "expected_score": "2 : 2",
+      "over_2_5": 68,
+      "btts": 68,
+      "clean_sheet_home": 15,
+      "confidence": 45,
+      "value_rating": 2,
+      "edge_pct": null,
+      "red_card_risk": "ELEVATED",
+      "modules": {
+        "home_win_reasons": {
+          "score": 0.55,
+          "items": [
+            {
+              "label": "ENG_quality",
+              "value": "+",
+              "note": "英格兰Kane/Bellingham/Saka整体强,Bellingham八强双响正火热"
+            },
+            {
+              "label": "home_market",
+              "value": "+",
+              "note": "★庄家反给英格兰favored(36.7% vs 阿31.2%),市场更看好英格兰"
+            }
+          ]
+        },
+        "home_risk": {
+          "score": -0.6,
+          "items": [
+            {
+              "label": "ARG_firepower",
+              "value": "-",
+              "note": "★阿根廷本届场均进2.83球(全场最高)、Messi/Julián Álvarez/Lautaro火力猛"
+            },
+            {
+              "label": "ARG_champion",
+              "value": "-",
+              "note": "卫冕冠军底蕴+淘汰赛硬仗经验(八强加时逆转瑞士)"
+            }
+          ]
+        },
+        "away_upset_path": {
+          "score": 0.5,
+          "items": [
+            {
+              "label": "vs_market",
+              "value": "★方向相反=风险",
+              "note": "★模型给阿根廷45% vs 庄家31.2%,方向相反(阿+14)——多半是模型高估阿根廷进攻(看它进球多就给高),当风险信号,别当机会(刚在高估瑞士那场被验证过)"
+            },
+            {
+              "label": "Messi",
+              "value": "+",
+              "note": "Messi大赛关键先生,一脚定乾坤的能力"
+            }
+          ]
+        },
+        "live_variables": {
+          "score": 0,
+          "items": [
+            {
+              "label": "rivalry",
+              "value": "-",
+              "note": "★英阿宿敌世纪对决(马岛/1986恩怨),火药味足、易情绪化,红牌风险偏高"
+            },
+            {
+              "label": "goals",
+              "value": "±",
+              "note": "两队都能进、防守都非顶级→模型期望总进球约3.5个,大球倾向"
+            }
+          ]
+        }
+      },
+      "players": {
+        "home": [
+          { "name": "Harry Kane", "pos": "ST", "status": "KEY", "note": "支点+终结" },
+          { "name": "Jude Bellingham", "pos": "AM", "status": "HOT", "note": "八强双响,状态爆棚" },
+          { "name": "Bukayo Saka", "pos": "RW", "status": "OK", "note": "边路突破" },
+          { "name": "英格兰体能", "pos": "—", "status": "QUEST", "note": "刚打完加时,体能待恢复" }
+        ],
+        "away": [
+          { "name": "Lionel Messi", "pos": "AM", "status": "KEY", "note": "核心大脑" },
+          { "name": "Julián Álvarez", "pos": "ST", "status": "HOT", "note": "八强世界波,火热" },
+          { "name": "Lautaro Martínez", "pos": "ST", "status": "OK", "note": "锋线终结" },
+          { "name": "Enzo Fernández", "pos": "CM", "status": "OK", "note": "中场调度" }
+        ]
+      },
+      "odds": [
+        { "book": "实时盘口见ODDS tab", "home": null, "draw": null, "away": null, "edge_pct": null }
+      ],
+      "live_log": [
+        { "time": "—", "level": "OK", "msg": "★真模型:泊松+蒙特卡洛真跑5万次,强度=各队本届真实进球(防穿越cutoff7/15,含R16+八强)" },
+        { "time": "—", "level": "OK", "msg": "FIFA rank ENG#4 ARG#1" },
+        { "time": "—", "level": "WARN", "msg": "★模型 33/22/45 vs 庄家 36.7/32/31.2:★方向相反,阿根廷+14,多半是模型高估阿根廷——当风险信号" },
+        { "time": "—", "level": "OK", "msg": "蒙特卡洛5万次输出: 33 / 22 / 45 · 最可能1-1(9%)" }
       ]
     }
   ]
