@@ -3,28 +3,28 @@
 window.WCP_ODDS = [
   {
     "home_code": "FRA",
-    "away_code": "ESP",
+    "away_code": "ENG",
     "home_team": "France",
-    "away_team": "Spain",
-    "commence": "2026-07-14T19:00:00Z",
+    "away_team": "England",
+    "commence": "2026-07-18T21:00:00Z",
     "market": {
-      "home": 41.1,
-      "draw": 29.4,
-      "away": 29.5,
-      "books": 49
+      "home": 44.0,
+      "draw": 27.3,
+      "away": 28.7,
+      "books": 41
     }
   },
   {
-    "home_code": "ENG",
+    "home_code": "ESP",
     "away_code": "ARG",
-    "home_team": "England",
+    "home_team": "Spain",
     "away_team": "Argentina",
-    "commence": "2026-07-15T19:00:00Z",
+    "commence": "2026-07-19T19:00:00Z",
     "market": {
-      "home": 36.7,
-      "draw": 32.0,
-      "away": 31.2,
-      "books": 49
+      "home": 41.8,
+      "draw": 31.4,
+      "away": 26.7,
+      "books": 42
     }
   }
 ];

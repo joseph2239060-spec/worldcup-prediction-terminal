@@ -133,7 +133,36 @@ window.WCP_DAYS["2026-07-15"] = {
         { "time": "—", "level": "OK", "msg": "FIFA rank ENG#4 ARG#1" },
         { "time": "—", "level": "WARN", "msg": "★模型 33/22/45 vs 庄家 36.7/32/31.2:★方向相反,阿根廷+14,多半是模型高估阿根廷——当风险信号" },
         { "time": "—", "level": "OK", "msg": "蒙特卡洛5万次输出: 33 / 22 / 45 · 最可能1-1(9%)" }
-      ]
+      ],
+      "result": {
+        "status": "FT",
+        "home_goals": 1,
+        "away_goals": 2,
+        "scoreline": "1 - 2",
+        "scorers": [
+          { "min": "55'", "team": "ENG", "player": "Anthony Gordon", "type": "接Rogers传中破门 → 1-0" },
+          { "min": "85'", "team": "ARG", "player": "Enzo Fernández", "type": "Messi助攻扳平 → 1-1" },
+          { "min": "92'", "team": "ARG", "player": "Lautaro", "type": "Messi助攻头球绝杀 → 1-2" }
+        ],
+        "red_cards": [],
+        "stats": { "shots_home": null, "shots_on_target_home": null, "poss_home": null, "poss_away": null },
+        "key_moment": "阿根廷2-1逆转英格兰、进决赛(卫冕在望)。英格兰Gordon 55'先进,阿根廷Enzo 85'扳平、Lautaro 92'头球绝杀,Messi两次助攻。模型逆着庄家押阿根廷45%(庄家押英格兰)→方向对,逆庄家成功",
+        "source": "FIFA/ESPN/CNN"
+      },
+      "review": {
+        "verdict": "HIT",
+        "headline": "★逆庄家押对!模型押阿根廷45%(庄家押英格兰)→阿根廷2-1逆转。Messi两助攻,大分歧这次兑现在模型这边",
+        "hits": [
+          "★方向对、还逆庄家:模型给阿根廷45%(庄家只31.2、押英格兰36.7)→阿根廷赢 ✓,难得逆盘口成功",
+          "★模型看阿根廷火力(本届场均2.83球)对了:Messi串联,Enzo+Lautaro完成逆转",
+          "'两队都能进、易大球'判对:1-2三球"
+        ],
+        "misses": [
+          "阿根廷落后到85'才扳平、92'才绝杀,模型给45%没体现'要落后逆转'(但方向对)",
+          "Messi两助攻绝杀这种逆转剧情,模型只给最终概率、算不出"
+        ],
+        "model_lesson": "这场模型逆着庄家押阿根廷、押对了——和八强瑞士那场(同样逆庄家、但错了)正好相反。这说明'大分歧'的本质是高方差:可能大对(这次)也可能大错(瑞士),因为模型和庄家必有一方大错。诚实的平衡:①这次模型赢在阿根廷火力真兑现(Messi两助攻),不是撞运气;②但绝不能因为这次对就丢掉'大分歧当风险'的原则——瑞士那次一模一样的逻辑就翻车了。押对给模型记一功,长期还是看命中率,别飘"
+      }
     }
   ]
 };
