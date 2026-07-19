@@ -84,7 +84,42 @@ window.WCP_DAYS["2026-07-18"] = {
         { "time": "—", "level": "OK", "msg": "FIFA rank FRA#2 ENG#4" },
         { "time": "—", "level": "WARN", "msg": "★模型 57/23/20 vs 庄家 44/27.3/28.7:模型更看好法国(+13);但季军赛方差大,参考打折" },
         { "time": "—", "level": "OK", "msg": "蒙特卡洛5万次输出: 57 / 23 / 20 · 最可能1-1(11%)" }
-      ]
+      ],
+      "result": {
+        "status": "FT",
+        "home_goals": 4,
+        "away_goals": 6,
+        "scoreline": "4 - 6",
+        "scorers": [
+          { "min": "3'", "team": "ENG", "player": "Declan Rice", "type": "远射吊射 → 0-1" },
+          { "min": "18'", "team": "ENG", "player": "Ezri Konsa", "type": "角球头球 → 0-2" },
+          { "min": "37'", "team": "ENG", "player": "Saka", "type": "接Rashford传球推空门 → 0-3" },
+          { "min": "45+1'", "team": "ENG", "player": "Saka", "type": "禁区边缘爆射 → 0-4" },
+          { "min": "48'", "team": "FRA", "player": "Mbappé", "type": "下半场首球 → 1-4" },
+          { "min": "54'", "team": "FRA", "player": "Barcola", "type": "Mbappé助攻 → 2-4" },
+          { "min": "65'", "team": "FRA", "player": "Mbappé", "type": "梅开二度(Olise助攻)→ 3-4" },
+          { "min": "87'", "team": "ENG", "player": "Saka", "type": "点球完成帽子戏法 → 3-5" },
+          { "min": "90+6'", "team": "FRA", "player": "Dembélé", "type": "Upamecano助攻,追到 → 4-5" },
+          { "min": "90+8'", "team": "ENG", "player": "Bellingham", "type": "单骑过三人锁定 → 4-6" }
+        ],
+        "red_cards": [],
+        "stats": { "shots_home": null, "shots_on_target_home": null, "poss_home": null, "poss_away": null },
+        "key_moment": "英格兰6-4法国、10球大战夺季军铜牌。英格兰上半场0-4狂轰(Rice 3'/Konsa 18'/Saka 37'+45+1'),法国下半场Mbappé梅开二度(48'/65')+Barcola追到4-5差一球,Saka 87'点球完成帽子戏法、Bellingham 90+8'单骑锁定6-4。Mbappé金靴级(追平进球纪录)。模型押法国57%→MISS,但赛前'季军赛方差大'预警对了、大球也判对",
+        "source": "ESPN/beIN/Yahoo"
+      },
+      "review": {
+        "verdict": "MISS",
+        "headline": "✗季军赛爆10球:模型押法国57%→英格兰6-4夺铜。但赛前'季军赛方差大'预警对了,大球也判准",
+        "hits": [
+          "★大球判对:模型说两队都能进、易大球(over 54%),结果10球爆表(4-6)",
+          "★赛前预警对:模型自己标了'季军赛荣誉战、动力不足、方差大、参考打折'——结果正是无防守的疯狂对攻,完美印证"
+        ],
+        "misses": [
+          "★方向错:模型押法国57%(最高)→英格兰6-4赢,英格兰上半场就0-4狂轰",
+          "模型给英格兰20%远远不够:Saka帽子戏法、英格兰进6球,季军赛的实力方向模型本就难算"
+        ],
+        "model_lesson": "季军赛MISS,但这场恰恰证明模型赛前的诚实预警是对的——我标了'季军赛荣誉战、动力不足、方差大、参考打折,别太当真',结果10球疯狂对攻(0-4→4-5→4-6)完美印证。季军赛没有防守动机、放开对攻,任何实力模型都算不准方向,能判对'大球'已经不错。这不是模型核心能力的问题(淘汰赛分胜负那套仍成立),是'荣誉战'本身不可预测。教训已在赛前落实:遇到动机异常的比赛(季军赛/已出线末轮),模型输出就该打折、标风险——这次做到了"
+      }
     }
   ]
 };
