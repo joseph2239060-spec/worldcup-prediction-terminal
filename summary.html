@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>WCP · 世界杯收官战绩</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#05070a; color:#e6edf3; font-family:'Inter',system-ui,-apple-system,sans-serif; padding:24px; }
+  .mono { font-family:'JetBrains Mono','Consolas',monospace; }
+  .wrap { width:1240px; margin:0 auto; }
+
+  /* header */
+  .hdr { display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #21262d; padding-bottom:14px; margin-bottom:20px; }
+  .hdr .t1 { color:#ff9500; font-size:26px; font-weight:800; letter-spacing:.5px; }
+  .hdr .t2 { color:#8b949e; font-size:13px; margin-top:4px; }
+  .hdr .champ { text-align:right; }
+  .hdr .champ .big { font-size:22px; font-weight:800; color:#f0c674; }
+  .hdr .champ .sub { color:#8b949e; font-size:12px; margin-top:3px; }
+
+  .grid { display:grid; grid-template-columns:1.15fr 1fr; gap:18px; margin-bottom:18px; }
+  .panel { background:linear-gradient(160deg,#0d1117,#0a0e14); border:1px solid #21262d; border-radius:14px; padding:18px 20px; }
+  .panel .lbl { color:#8b949e; font-size:12px; font-weight:700; letter-spacing:.5px; margin-bottom:16px; text-transform:uppercase; }
+
+  /* 命中率条 */
+  .rate { margin-bottom:16px; }
+  .rate:last-child { margin-bottom:0; }
+  .rate .top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+  .rate .name { font-size:14px; color:#c9d1d9; }
+  .rate .name span { color:#8b949e; font-size:12px; margin-left:6px; }
+  .rate .pct { font-size:24px; font-weight:800; }
+  .rate .bar { height:12px; background:#161b22; border-radius:6px; overflow:hidden; }
+  .rate .fill { height:100%; border-radius:6px; }
+
+  /* 决赛高光 */
+  .final { border-color:#ff9500; background:linear-gradient(160deg,#161009,#0d0a06); }
+  .final .score { display:flex; align-items:center; justify-content:center; gap:16px; margin:6px 0 14px; }
+  .final .team { text-align:center; flex:1; }
+  .final .team .n { font-size:19px; font-weight:800; }
+  .final .team .f { font-size:30px; }
+  .final .sc { font-size:34px; font-weight:800; color:#f0c674; }
+  .final .aet { color:#8b949e; font-size:11px; text-align:center; margin-top:-8px; margin-bottom:12px; }
+  .final .rows { display:flex; flex-direction:column; gap:7px; }
+  .final .row { display:flex; align-items:center; gap:8px; font-size:13px; }
+  .final .row .ic { color:#26a69a; font-weight:800; }
+  .final .row b { color:#f0c674; }
+
+  /* 时间线 */
+  .timeline .cells { display:grid; grid-template-columns:repeat(12,1fr); gap:7px; }
+  .cell { border-radius:9px; padding:9px 4px; text-align:center; border:1px solid; }
+  .cell.hit { background:rgba(38,166,154,.12); border-color:#26a69a; }
+  .cell.miss { background:rgba(239,83,80,.12); border-color:#ef5350; }
+  .cell .v { font-size:16px; font-weight:800; }
+  .cell.hit .v { color:#26a69a; }
+  .cell.miss .v { color:#ef5350; }
+  .cell .m { font-size:9px; color:#8b949e; margin-top:3px; }
+  .cell .p { font-size:10px; color:#c9d1d9; margin-top:2px; font-weight:600; }
+  .cell .d { font-size:8px; color:#6e7681; margin-top:2px; }
+
+  /* 底部三栏 */
+  .grid3 { display:grid; grid-template-columns:1.4fr .8fr 1fr; gap:18px; }
+  .miss-item { font-size:12px; color:#c9d1d9; margin-bottom:9px; line-height:1.5; padding-left:14px; position:relative; }
+  .miss-item::before { content:'✗'; position:absolute; left:0; color:#ef5350; font-weight:800; }
+  .miss-item b { color:#e6edf3; }
+  .miss-item .cause { color:#f0c674; }
+  .big-stat { text-align:center; }
+  .big-stat .n { font-size:40px; font-weight:800; color:#58a6ff; }
+  .big-stat .l { color:#8b949e; font-size:12px; margin-top:4px; line-height:1.5; }
+  .creed { display:flex; flex-direction:column; justify-content:center; height:100%; }
+  .creed .q { font-size:15px; font-weight:700; color:#f0c674; line-height:1.6; }
+  .creed .s { font-size:11px; color:#8b949e; margin-top:10px; line-height:1.6; }
+
+  .foot { margin-top:16px; text-align:center; color:#6e7681; font-size:11px; }
+  .foot b { color:#ff9500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div>
+      <div class="t1">🏆 WORLD CUP 2026 · 真模型战绩收官</div>
+      <div class="t2 mono">predict.js · 泊松乘法 + 真蒙特卡洛5万次 · 全程防穿越盲测（只用赛前真实比分）</div>
+    </div>
+    <div class="champ">
+      <div class="big">🇪🇸 西班牙 夺冠</div>
+      <div class="sub mono">时隔16年再登顶 · 决赛 1-0 阿根廷（加时）</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- 命中率 -->
+    <div class="panel">
+      <div class="lbl">◈ 方向命中率（模型押的赢家 vs 实际）</div>
+      <div class="rate">
+        <div class="top"><div class="name">淘汰赛全部 <span class="mono">9 HIT / 3 MISS · 12场</span></div><div class="pct" style="color:#26a69a">75%</div></div>
+        <div class="bar"><div class="fill" style="width:75%;background:linear-gradient(90deg,#1a7a70,#26a69a)"></div></div>
+      </div>
+      <div class="rate">
+        <div class="top"><div class="name">淘汰赛正赛 <span class="mono">排除季军赛荣誉战 · 11场</span></div><div class="pct" style="color:#f0c674">82%</div></div>
+        <div class="bar"><div class="fill" style="width:82%;background:linear-gradient(90deg,#b8912f,#f0c674)"></div></div>
+      </div>
+      <div class="rate">
+        <div class="top"><div class="name">全届（含历史人工场）<span class="mono">69 HIT / 30 MISS · 104场</span></div><div class="pct" style="color:#58a6ff">70%</div></div>
+        <div class="bar"><div class="fill" style="width:70%;background:linear-gradient(90deg,#2d5a8c,#58a6ff)"></div></div>
+      </div>
+    </div>
+
+    <!-- 决赛高光 -->
+    <div class="panel final">
+      <div class="lbl" style="color:#ff9500">★ 决赛高光 · 模型完美收官</div>
+      <div class="score">
+        <div class="team"><div class="f">🇪🇸</div><div class="n">西班牙</div></div>
+        <div class="sc">1 - 0</div>
+        <div class="team"><div class="f">🇦🇷</div><div class="n">阿根廷</div></div>
+      </div>
+      <div class="aet mono">加时 106' Ferran Torres 绝杀</div>
+      <div class="rows">
+        <div class="row"><span class="ic">✓</span><span>重仓西班牙 <b>53%</b>（逆着庄家 41.7%）→ 夺冠</span></div>
+        <div class="row"><span class="ic">✓</span><span>最可能比分 <b>1-0</b> → 实际正好 1-0</span></div>
+        <div class="row"><span class="ic">✓</span><span>给阿根廷 19% 最低 → 阿根廷 <b>2射0正</b>被压制</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 时间线 -->
+  <div class="panel timeline" style="margin-bottom:18px">
+    <div class="lbl">◈ 淘汰赛逐场盲测（16强 → 决赛）</div>
+    <div class="cells">
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">POR-ESP</div><div class="p">0-1</div><div class="d">16强</div></div>
+      <div class="cell miss"><div class="v">✗</div><div class="m mono">USA-BEL</div><div class="p">1-4</div><div class="d">16强</div></div>
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">ARG-EGY</div><div class="p">3-2</div><div class="d">16强</div></div>
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">SUI-COL</div><div class="p">点球</div><div class="d">16强</div></div>
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">FRA-MAR</div><div class="p">2-0</div><div class="d">8强</div></div>
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">ESP-BEL</div><div class="p">2-1</div><div class="d">8强</div></div>
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">NOR-ENG</div><div class="p">1-2</div><div class="d">8强</div></div>
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">ARG-SUI</div><div class="p">3-1</div><div class="d">8强</div></div>
+      <div class="cell miss"><div class="v">✗</div><div class="m mono">FRA-ESP</div><div class="p">0-2</div><div class="d">4强</div></div>
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">ENG-ARG</div><div class="p">1-2</div><div class="d">4强</div></div>
+      <div class="cell miss"><div class="v">✗</div><div class="m mono">FRA-ENG</div><div class="p">4-6</div><div class="d">季军</div></div>
+      <div class="cell hit"><div class="v">✓</div><div class="m mono">ESP-ARG</div><div class="p">1-0</div><div class="d">决赛</div></div>
+    </div>
+  </div>
+
+  <!-- 底部三栏 -->
+  <div class="grid3">
+    <div class="panel">
+      <div class="lbl">◈ 3个MISS · 全部诚实认账</div>
+      <div class="miss-item"><b>USA-BEL</b>（被4-1）：<span class="cause">高估美国进攻</span>——把刷鱼腩的进球当真实力</div>
+      <div class="miss-item"><b>FRA-ESP</b>（西班牙2-0）：<span class="cause">低估西班牙防守</span>——只看进攻λ、不看防守</div>
+      <div class="miss-item"><b>FRA-ENG</b>（季军4-6）：<span class="cause">荣誉战不可预测</span>——但赛前已标风险、大球判对</div>
+      <div style="color:#8b949e;font-size:11px;margin-top:12px;line-height:1.5">→ 前两个同一个病，正是 <b style="color:#26a69a">v2「防守权重 + 对手强度加权」</b>要修的</div>
+    </div>
+    <div class="panel big-stat" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="n">2 / 3</div>
+      <div class="l">逆庄家押对<br><span class="mono" style="font-size:10px">英阿✓ 决赛✓ · 八强瑞士✗<br>大分歧 = 高方差，别神化</span></div>
+    </div>
+    <div class="panel creed">
+      <div class="q">"会错，但真实。<br>每个数字都真算出来。"</div>
+      <div class="s">泊松+蒙特卡洛真跑5万次 · 概率来自各队本届真实进球 · 防穿越只用赛前数据 · 错了当场认、指明改进方向</div>
+    </div>
+  </div>
+
+  <div class="foot mono">数据全程盲测 · 比分/盘口/排名/天气均权威源核实 · <b>@你的频道名</b> · 2026 FIFA World Cup</div>
+
+</div>
+</body>
+</html>
