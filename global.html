@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>WCP · 2026世界杯全景</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#05070a; color:#e6edf3; font-family:'Inter',system-ui,-apple-system,sans-serif; padding:24px; }
+  .mono { font-family:'JetBrains Mono','Consolas',monospace; }
+  .wrap { width:1240px; margin:0 auto; }
+
+  .hdr { display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #21262d; padding-bottom:14px; margin-bottom:20px; }
+  .hdr .t1 { color:#ff9500; font-size:26px; font-weight:800; letter-spacing:.5px; }
+  .hdr .t2 { color:#8b949e; font-size:13px; margin-top:4px; }
+  .hdr .champ { text-align:right; }
+  .hdr .champ .big { font-size:22px; font-weight:800; color:#f0c674; }
+  .hdr .champ .sub { color:#8b949e; font-size:12px; margin-top:3px; }
+
+  .panel { background:linear-gradient(160deg,#0d1117,#0a0e14); border:1px solid #21262d; border-radius:14px; padding:18px 20px; }
+  .lbl { color:#8b949e; font-size:12px; font-weight:700; letter-spacing:.5px; margin-bottom:16px; text-transform:uppercase; }
+
+  .grid { display:grid; grid-template-columns:1.55fr 1fr; gap:18px; margin-bottom:18px; }
+
+  /* 柱状图 */
+  .chart { display:flex; align-items:flex-end; justify-content:space-between; height:230px; gap:14px; padding-top:10px; position:relative; }
+  .avgline { position:absolute; left:0; right:0; border-top:1px dashed #6e7681; }
+  .avgline .tag { position:absolute; right:0; top:-16px; color:#6e7681; font-size:10px; }
+  .col { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; }
+  .col .pct { font-size:19px; font-weight:800; margin-bottom:5px; }
+  .col .bar { width:100%; border-radius:7px 7px 0 0; min-height:4px; transition:none; }
+  .col .xl { color:#c9d1d9; font-size:12px; font-weight:600; margin-top:8px; text-align:center; }
+  .col .xs { color:#6e7681; font-size:10px; margin-top:2px; }
+  .col .gg { color:#58a6ff; font-size:10px; margin-top:4px; }
+
+  /* 右侧数字 */
+  .stat4 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .stat { background:#12161c; border:1px solid #21262d; border-radius:10px; padding:14px; text-align:center; }
+  .stat .n { font-size:30px; font-weight:800; }
+  .stat .l { color:#8b949e; font-size:11px; margin-top:3px; }
+
+  /* verdict 堆叠 */
+  .vbar { display:flex; height:34px; border-radius:8px; overflow:hidden; margin-bottom:10px; }
+  .vseg { display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:#05070a; }
+  .vlegend { display:flex; gap:18px; font-size:12px; color:#8b949e; flex-wrap:wrap; }
+  .vlegend span b { color:#e6edf3; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; vertical-align:middle; }
+
+  .grid3 { display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:18px; margin-top:18px; }
+  .ins { font-size:12px; color:#c9d1d9; line-height:1.65; margin-bottom:8px; padding-left:14px; position:relative; }
+  .ins::before { content:'▸'; position:absolute; left:0; color:#26a69a; }
+  .ins b { color:#f0c674; }
+  .most { text-align:center; }
+  .most .n { font-size:34px; font-weight:800; color:#ef5350; }
+  .most .l { color:#8b949e; font-size:12px; margin-top:4px; line-height:1.5; }
+  .most .l b { color:#e6edf3; }
+  .road .step { display:flex; align-items:center; gap:8px; font-size:12px; color:#c9d1d9; margin-bottom:6px; }
+  .road .step .st { color:#6e7681; font-size:10px; width:42px; }
+  .road .step b { color:#f0c674; }
+
+  .foot { margin-top:16px; text-align:center; color:#6e7681; font-size:11px; }
+  .foot b { color:#ff9500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div>
+      <div class="t1">🌍 2026 世界杯全景 · 真模型 vs 全 104 场</div>
+      <div class="t2 mono">predict.js 泊松+蒙特卡洛5万次 · 104场 / 311球 / 场均2.99 · 数据全程盲测</div>
+    </div>
+    <div class="champ">
+      <div class="big">🇪🇸 西班牙 夺冠</div>
+      <div class="sub mono">决赛 1-0 阿根廷 · 时隔16年再登顶</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- 阶段命中率柱状图 -->
+    <div class="panel">
+      <div class="lbl">◈ 各阶段方向命中率 —— 淘汰赛远高于小组赛</div>
+      <div class="chart">
+        <div class="col"><div class="pct" style="color:#58a6ff">64%</div><div class="bar" style="height:64%;background:linear-gradient(180deg,#58a6ff,#2d5a8c)"></div><div class="xl">小组赛</div><div class="xs mono">72场·43-24</div><div class="gg mono">3.03球</div></div>
+        <div class="col"><div class="pct" style="color:#26a69a">88%</div><div class="bar" style="height:88%;background:linear-gradient(180deg,#26a69a,#1a7a70)"></div><div class="xl">32强</div><div class="xs mono">16场·14-2</div><div class="gg mono">2.63球</div></div>
+        <div class="col"><div class="pct" style="color:#26a69a">75%</div><div class="bar" style="height:75%;background:linear-gradient(180deg,#26a69a,#1a7a70)"></div><div class="xl">16强</div><div class="xs mono">8场·6-2</div><div class="gg mono">2.88球</div></div>
+        <div class="col"><div class="pct" style="color:#f0c674">100%</div><div class="bar" style="height:100%;background:linear-gradient(180deg,#f0c674,#b8912f)"></div><div class="xl">8强</div><div class="xs mono">4场·4-0</div><div class="gg mono">3.00球</div></div>
+        <div class="col"><div class="pct" style="color:#8b949e">50%</div><div class="bar" style="height:50%;background:linear-gradient(180deg,#6e7681,#40464d)"></div><div class="xl">4强</div><div class="xs mono">2场·1-1</div><div class="gg mono">2.50球</div></div>
+        <div class="col"><div class="pct" style="color:#8b949e">50%</div><div class="bar" style="height:50%;background:linear-gradient(180deg,#6e7681,#40464d)"></div><div class="xl">季军+决赛</div><div class="xs mono">2场·1-1</div><div class="gg mono">5.50球</div></div>
+      </div>
+      <div style="color:#6e7681;font-size:11px;margin-top:10px;text-align:center">柱高 = 命中率 · 蓝字 = 场均进球 · 8强 4/4 全对是高光,末段样本仅2场、波动大</div>
+    </div>
+
+    <!-- 关键数字 + verdict -->
+    <div class="panel">
+      <div class="lbl">◈ 整届关键数字</div>
+      <div class="stat4">
+        <div class="stat"><div class="n" style="color:#e6edf3">104</div><div class="l">总场次</div></div>
+        <div class="stat"><div class="n" style="color:#58a6ff">311</div><div class="l">总进球 · 场均2.99</div></div>
+        <div class="stat"><div class="n" style="color:#26a69a">70%</div><div class="l">分胜负命中率</div></div>
+        <div class="stat"><div class="n" style="color:#f0c674">75%</div><div class="l">真模型淘汰赛</div></div>
+      </div>
+      <div style="margin-top:18px">
+        <div class="lbl" style="margin-bottom:10px">◈ 全部预测结果分布</div>
+        <div class="vbar">
+          <div class="vseg" style="width:66.3%;background:#26a69a">69 HIT</div>
+          <div class="vseg" style="width:28.8%;background:#ef5350">30 MISS</div>
+          <div class="vseg" style="width:3.8%;background:#f0c674"></div>
+          <div class="vseg" style="width:1%;background:#6e7681"></div>
+        </div>
+        <div class="vlegend">
+          <span><i class="dot" style="background:#26a69a"></i><b>69</b> 命中</span>
+          <span><i class="dot" style="background:#ef5350"></i><b>30</b> 未中</span>
+          <span><i class="dot" style="background:#f0c674"></i><b>4</b> 部分</span>
+          <span><i class="dot" style="background:#6e7681"></i><b>1</b> 未预测</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部三栏 -->
+  <div class="grid3">
+    <div class="panel">
+      <div class="lbl">◈ 核心洞察</div>
+      <div class="ins"><b>淘汰赛 &gt; 小组赛</b>：32强88%、8强100% 碾压小组赛 64%——小组赛被<b>平局</b>拖累,平局是模型(和庄家)公认盲区</div>
+      <div class="ins"><b>越到关键越稳</b>：真模型阶段(16强起)9胜3负75%,3个MISS全指向"只看进攻λ"的病,是v2改进方向</div>
+      <div class="ins"><b>会错但真实</b>：30个MISS全部当场认账、指明原因,没有一个数字是拍脑袋编的</div>
+    </div>
+    <div class="panel most">
+      <div class="lbl">◈ 整届之最</div>
+      <div class="n">10</div>
+      <div class="l">单场最多进球<br><b>法国 4-6 英格兰</b>(季军赛)<br><span class="mono" style="font-size:10px">Saka帽子戏法 · Bellingham 90+8'绝杀</span></div>
+    </div>
+    <div class="panel road">
+      <div class="lbl">◈ 西班牙冠军之路</div>
+      <div class="step"><span class="st mono">16强</span>1-0 葡萄牙</div>
+      <div class="step"><span class="st mono">8强</span>2-1 比利时</div>
+      <div class="step"><span class="st mono">4强</span>2-0 法国</div>
+      <div class="step"><span class="st mono">决赛</span><b>1-0 阿根廷 🏆</b></div>
+      <div style="color:#6e7681;font-size:10px;margin-top:6px">整届失球最少,铁防夺冠</div>
+    </div>
+  </div>
+
+  <div class="foot mono">2026 FIFA World Cup · 6/11–7/19 · 全程盲测,比分/盘口/排名/天气均权威源核实 · <b>@你的频道名</b></div>
+
+</div>
+</body>
+</html>
