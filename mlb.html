@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MLB Predict Terminal · 棒球赛前预测</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background:#0B0E11; color:#F5F7FA; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .card { background:#15191E; border:1px solid #2A323B; border-radius:14px; }
+  .chip { background:#1E242B; border:1px solid #2A323B; border-radius:10px; }
+  .bar { height:8px; border-radius:4px; background:#2A323B; overflow:hidden; }
+  .amber { color:#FFB200; } .green { color:#1FE078; } .red { color:#FF4D4D; } .mute { color:#5C6672; } .t2 { color:#9AA4B0; }
+</style>
+</head>
+<body class="px-4 py-4 md:px-8">
+  <header class="flex flex-wrap items-center justify-between gap-2 border-b border-[#2A323B] pb-3 mb-4">
+    <div>
+      <span class="amber font-bold tracking-wider">MLB PREDICT TERMINAL</span>
+      <span class="mute text-xs ml-2">棒球赛前预测 · 泊松 + 蒙特卡洛 5 万次</span>
+    </div>
+    <div class="text-xs t2">
+      <span class="green">● LIVE</span>
+      <span id="date" class="ml-3"></span>
+      <span id="count" class="ml-3 mute"></span>
+    </div>
+  </header>
+  <div id="games" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+  <p class="mute text-[11px] mt-6 text-center">
+    模型 vs 庄家 · 数据真实核实 · 个人技术演示,非投注建议 &nbsp;|&nbsp; λ 由球队场均得失分算,先发投手 v2 细化
+  </p>
+
+<script src="data/mlb-latest.js" onerror="document.getElementById('games').innerHTML='<p class=mute>先跑 python3 mlb_predict.py 生成数据</p>'"></script>
+<script>
+const D = window.MLB_GAMES || {games:[]};
+document.getElementById('date').textContent = D.date || '';
+document.getElementById('count').textContent = (D.games.length||0) + ' 场';
+
+function bar(pct, color){ return `<div class="bar"><div style="width:${pct}%;height:100%;background:${color}"></div></div>`; }
+function cell(label, val){ return `<div class="chip px-2 py-2 text-center"><div class="mute text-[10px]">${label}</div><div class="font-bold text-sm">${val}</div></div>`; }
+
+document.getElementById('games').innerHTML = D.games.map(g => {
+  const homeFav = g.home_win_pct >= g.away_win_pct;
+  const fav = homeFav ? g.home : g.away;
+  const favPct = Math.max(g.home_win_pct, g.away_win_pct);
+  const rl = homeFav ? g.home_run_line_pct : g.away_run_line_pct;
+  const tops = (g.top_scores||[]).slice(0,6).map(s=>`<span class="chip px-2 py-1 font-bold">${s}</span>`).join(' ');
+  return `
+  <div class="card p-4">
+    <div class="flex items-center justify-between mb-2">
+      <div class="font-bold">${g.away.code} <span class="mute">@</span> ${g.home.code}</div>
+      <div class="mute text-[11px]">${g.venue||''}</div>
+    </div>
+    <div class="t2 text-[11px] mb-3">${g.away.zh} @ ${g.home.zh}</div>
+
+    <div class="flex items-center justify-between mb-1 text-sm">
+      <span>谁会赢 → <span class="green font-bold">${fav.code}</span></span>
+      <span class="green font-bold">${favPct}%</span>
+    </div>
+    <div class="grid grid-cols-2 gap-2 mb-3">
+      <div><div class="flex justify-between text-[11px] mb-1"><span class="t2">${g.home.code}</span><span class="green">${g.home_win_pct}%</span></div>${bar(g.home_win_pct,'#1FE078')}</div>
+      <div><div class="flex justify-between text-[11px] mb-1"><span class="t2">${g.away.code}</span><span class="red">${g.away_win_pct}%</span></div>${bar(g.away_win_pct,'#FF4D4D')}</div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-2 mb-3">
+      ${cell('期望比分', Math.round(g.exp_h)+'-'+Math.round(g.exp_a))}
+      ${cell('大 8.5', g.over_8_5+'%')}
+      ${cell(fav.code+' -1.5', rl+'%')}
+      ${cell('进加时', g.extra_innings_pct+'%')}
+    </div>
+
+    <div class="mute text-[10px] mb-1">最可能比分</div>
+    <div class="flex flex-wrap gap-1 text-xs">${tops}</div>
+  </div>`;
+}).join('');
+</script>
+</body>
+</html>
