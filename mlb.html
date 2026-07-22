@@ -26,8 +26,10 @@
     </div>
   </header>
   <div id="games" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
-  <p class="mute text-[11px] mt-6 text-center">
-    模型 vs 庄家 · 数据真实核实 · 个人技术演示,非投注建议 &nbsp;|&nbsp; λ 由球队场均得失分算,先发投手 v2 细化
+  <p class="mute text-[11px] mt-6 text-center leading-relaxed">
+    数据源:<b>MLB 官方 Stats API</b>(statsapi.mlb.com)· 赛季至今真实场均得失分 &nbsp;|&nbsp;
+    λ = 球队真实进攻 × 对手真实失分 / 联盟均值,主场 +4%;先发投手 v2 细化<br>
+    队标为各队主色 + 缩写(非官方 logo,避免商标)· 个人技术/统计演示,非投注建议
   </p>
 
 <script src="data/mlb-latest.js" onerror="document.getElementById('games').innerHTML='<p class=mute>先跑 python3 mlb_predict.py 生成数据</p>'"></script>
@@ -38,6 +40,8 @@ document.getElementById('count').textContent = (D.games.length||0) + ' 场';
 
 function bar(pct, color){ return `<div class="bar"><div style="width:${pct}%;height:100%;background:${color}"></div></div>`; }
 function cell(label, val){ return `<div class="chip px-2 py-2 text-center"><div class="mute text-[10px]">${label}</div><div class="font-bold text-sm">${val}</div></div>`; }
+// 队标:各队主色圆 + 缩写(不用官方 logo,避免商标侵权)
+function badge(t){ return `<span style="width:24px;height:24px;border-radius:50%;background:${t.color||'#2A323B'};display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;letter-spacing:.3px">${t.code}</span>`; }
 
 document.getElementById('games').innerHTML = D.games.map(g => {
   const homeFav = g.home_win_pct >= g.away_win_pct;
@@ -48,7 +52,8 @@ document.getElementById('games').innerHTML = D.games.map(g => {
   return `
   <div class="card p-4">
     <div class="flex items-center justify-between mb-2">
-      <div class="font-bold">${g.away.code} <span class="mute">@</span> ${g.home.code}</div>
+      <div class="flex items-center gap-2 font-bold">${badge(g.away)} <span class="mute text-xs">@</span> ${badge(g.home)}
+        <span class="ml-1">${g.away.code} <span class="mute">@</span> ${g.home.code}</span></div>
       <div class="mute text-[11px]">${g.venue||''}</div>
     </div>
     <div class="t2 text-[11px] mb-3">${g.away.zh} @ ${g.home.zh}</div>
