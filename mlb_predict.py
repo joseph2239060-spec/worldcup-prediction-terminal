@@ -1,19 +1,20 @@
 """
 MLB 每日预测管线 —— 数据全部来自 MLB 官方 Stats API(statsapi.mlb.com,公开、免 key)。
-· 赛程:/schedule            · 球队真实场均得/失分:/standings(赛季至今 runsScored/runsAllowed ÷ 场次)
-自动拉真实数据 → 算 λ → 跑 simulate_mlb(泊松+蒙特卡洛)→ 写 data/mlb-latest.js(供 mlb.html)。
-用法:python3 mlb_predict.py [YYYY-MM-DD]   不传日期默认 DEFAULT_DATE。
-注:先发投手影响大,v2 再细化;当前 λ = 球队季度真实进攻 × 对手真实失分 / 联盟均值,主场 +4%。
-队标用各队主色圆形徽章 + 缩写(不使用官方 logo,避免商标侵权)。
+· 赛程 + 当天先发投手:/schedule?hydrate=probablePitcher   · 30 队真实场均得/失分:/standings
+· 先发投手赛季 ERA:/people?personIds=...&hydrate=stats(...)
+λ = 球队真实进攻 × 对手「有效失分」/ 联盟均值,主场 +4%。
+  对手有效失分 = 0.6 × 先发投手 RA9 + 0.4 × 球队整体失分(先发约投 5–6 局,牛棚兜底)。
+队标用各队主色圆徽 + 缩写(不使用官方 logo,避免商标侵权)。
+用法:python3 mlb_predict.py [YYYY-MM-DD]
 """
 import json, sys, urllib.request
 from simulate_mlb import simulate_mlb_match
 
 DEFAULT_DATE = "2026-07-22"
-LG = 4.50  # 联盟场均得分基准
+LG = 4.50          # 联盟场均得分基准
+SP_SHARE = 0.60    # 先发投手对一场失分的权重(约投 5.5/9 局)
 API = "https://statsapi.mlb.com/api/v1"
 
-# MLB 官方 team.name(简称)→ (三字码, 中文, 主色 hex)。主色为公开事实,仅用于配色圆徽,非官方 logo。
 TEAM_META = {
     "Nationals": ("WSH", "国民", "#AB0003"), "Pirates": ("PIT", "海盗", "#FDB827"),
     "Dodgers": ("LAD", "道奇", "#005A9C"), "Cubs": ("CHC", "小熊", "#0E3386"),
@@ -39,7 +40,6 @@ def fetch(path):
 
 
 def load_teams(season):
-    """id → 真实场均得/失分 + 元数据。"""
     j = fetch(f"/standings?leagueId=103,104&season={season}&standingsTypes=regularSeason")
     teams = {}
     for div in j.get("records", []):
@@ -49,53 +49,85 @@ def load_teams(season):
                 continue
             gp = t.get("gamesPlayed") or 1
             code, zh, color = meta
-            teams[t["team"]["id"]] = {
-                "code": code, "zh": zh, "color": color, "en": t["team"]["name"],
-                "rs": t["runsScored"] / gp, "ra": t["runsAllowed"] / gp,
-            }
+            teams[t["team"]["id"]] = {"code": code, "zh": zh, "color": color, "en": t["team"]["name"],
+                                     "rs": t["runsScored"] / gp, "ra": t["runsAllowed"] / gp}
     return teams
 
 
 def load_games(date, teams):
-    j = fetch(f"/schedule?sportId=1&date={date}")
+    j = fetch(f"/schedule?sportId=1&date={date}&hydrate=probablePitcher")
     games, seen = [], set()
     for d in j.get("dates", []):
         for g in d.get("games", []):
-            h = g["teams"]["home"]["team"]["id"]
-            a = g["teams"]["away"]["team"]["id"]
-            if h in teams and a in teams and (a, h) not in seen:  # 双重赛只取一场(同对阵同预测)
+            hm, aw = g["teams"]["home"], g["teams"]["away"]
+            h, a = hm["team"]["id"], aw["team"]["id"]
+            if h in teams and a in teams and (a, h) not in seen:
                 seen.add((a, h))
-                games.append((a, h, g.get("venue", {}).get("name", "")))
+                games.append({"a": a, "h": h, "venue": g.get("venue", {}).get("name", ""),
+                              "hp": hm.get("probablePitcher"), "ap": aw.get("probablePitcher")})
     return games
 
 
-def lam(off_rs, opp_ra, home):
-    return round(off_rs * (opp_ra / LG) * (1.04 if home else 1.0), 2)
+def load_pitchers(ids, season):
+    if not ids:
+        return {}
+    j = fetch(f"/people?personIds={','.join(map(str, ids))}&hydrate=stats(group=[pitching],type=[season],season={season})")
+    out = {}
+    for p in j.get("people", []):
+        era = None
+        for sg in p.get("stats", []):
+            for sp in sg.get("splits", []):
+                v = sp.get("stat", {}).get("era")
+                if v not in (None, "-", "-.--", ".---"):
+                    era = float(v)
+                    break
+            if era is not None:
+                break
+        out[p["id"]] = era
+    return out
+
+
+def eff_ra(sp_era, team_ra):
+    """对手一场的有效失分:先发投手 RA9(ERA×1.08)占 60%,球队整体失分兜底 40%。缺先发用球队失分。"""
+    if sp_era is None:
+        return team_ra
+    return round(SP_SHARE * sp_era * 1.08 + (1 - SP_SHARE) * team_ra, 2)
 
 
 def build(date):
-    teams = load_teams(date[:4])
+    season = date[:4]
+    teams = load_teams(season)
     games = load_games(date, teams)
+    pids = [g[k]["id"] for g in games for k in ("hp", "ap") if g.get(k)]
+    era = load_pitchers(pids, season)
+
+    def sp_info(p):
+        return {"name": p["fullName"], "era": era.get(p["id"])} if p else None
+
     out = []
-    for a, h, venue in games:
-        A, H = teams[a], teams[h]
-        lh, la = lam(H["rs"], A["ra"], True), lam(A["rs"], H["ra"], False)
+    for g in games:
+        A, H = teams[g["a"]], teams[g["h"]]
+        h_era = era.get(g["hp"]["id"]) if g.get("hp") else None
+        a_era = era.get(g["ap"]["id"]) if g.get("ap") else None
+        lh = round(H["rs"] * (eff_ra(a_era, A["ra"]) / LG) * 1.04, 2)  # 主队进攻 vs 客队先发+牛棚
+        la = round(A["rs"] * (eff_ra(h_era, H["ra"]) / LG), 2)          # 客队进攻 vs 主队先发+牛棚
         r = simulate_mlb_match(lh, la)
         out.append({
             "id": f"MLB_{date.replace('-','')}_{A['code']}{H['code']}",
-            "home": {"code": H["code"], "en": H["en"], "zh": H["zh"], "color": H["color"]},
-            "away": {"code": A["code"], "en": A["en"], "zh": A["zh"], "color": A["color"]},
-            "venue": venue, "lambda_home": lh, "lambda_away": la, **r,
+            "home": {"code": H["code"], "en": H["en"], "zh": H["zh"], "color": H["color"], "sp": sp_info(g.get("hp"))},
+            "away": {"code": A["code"], "en": A["en"], "zh": A["zh"], "color": A["color"], "sp": sp_info(g.get("ap"))},
+            "venue": g["venue"], "lambda_home": lh, "lambda_away": la, **r,
         })
     data = {"date": date, "games": out,
-            "source": "MLB Stats API (statsapi.mlb.com) · 赛季至今真实场均得失分"}
+            "source": "MLB Stats API · 真实场均得失分 + 当天先发投手 ERA"}
     with open("data/mlb-latest.js", "w", encoding="utf-8") as f:
         f.write("window.MLB_GAMES = " + json.dumps(data, ensure_ascii=False) + ";\n")
-    print(f"✅ {len(out)} 场 · 数据源:MLB 官方 Stats API(真实场均得失分)→ data/mlb-latest.js")
+    print(f"✅ {len(out)} 场 · 数据源:MLB 官方 API(真实得失分 + 先发投手)→ data/mlb-latest.js")
     for g in out:
         fav = g["home"]["code"] if g["home_win_pct"] >= g["away_win_pct"] else g["away"]["code"]
+        hp = g["home"]["sp"] or {}; ap = g["away"]["sp"] or {}
         print(f"  {g['away']['code']}@{g['home']['code']}: {fav} {max(g['home_win_pct'],g['away_win_pct'])}%"
-              f"  λ {g['lambda_away']}/{g['lambda_home']}  期望{round(g['exp_h'])}-{round(g['exp_a'])}")
+              f"  先发 {ap.get('name','?')}({ap.get('era','-')}) vs {hp.get('name','?')}({hp.get('era','-')})")
 
 
 if __name__ == "__main__":

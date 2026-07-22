@@ -27,8 +27,8 @@
   </header>
   <div id="games" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
   <p class="mute text-[11px] mt-6 text-center leading-relaxed">
-    数据源:<b>MLB 官方 Stats API</b>(statsapi.mlb.com)· 赛季至今真实场均得失分 &nbsp;|&nbsp;
-    λ = 球队真实进攻 × 对手真实失分 / 联盟均值,主场 +4%;先发投手 v2 细化<br>
+    数据源:<b>MLB 官方 Stats API</b> · 真实场均得失分 <b>+ 当天先发投手 ERA</b> &nbsp;|&nbsp;
+    λ = 真实进攻 × 对手有效失分(先发 60% + 牛棚 40%)/ 联盟均值,主场 +4%<br>
     队标为各队主色 + 缩写(非官方 logo,避免商标)· 个人技术/统计演示,非投注建议
   </p>
 
@@ -56,7 +56,8 @@ document.getElementById('games').innerHTML = D.games.map(g => {
         <span class="ml-1">${g.away.code} <span class="mute">@</span> ${g.home.code}</span></div>
       <div class="mute text-[11px]">${g.venue||''}</div>
     </div>
-    <div class="t2 text-[11px] mb-3">${g.away.zh} @ ${g.home.zh}</div>
+    <div class="t2 text-[11px] mb-1">${g.away.zh} @ ${g.home.zh}</div>
+    <div class="mute text-[11px] mb-3">先发 ${(g.away.sp&&g.away.sp.name)||'?'} <span class="t2">${(g.away.sp&&g.away.sp.era)!=null?g.away.sp.era:'-'}</span> vs ${(g.home.sp&&g.home.sp.name)||'?'} <span class="t2">${(g.home.sp&&g.home.sp.era)!=null?g.home.sp.era:'-'}</span></div>
 
     <div class="flex items-center justify-between mb-1 text-sm">
       <span>谁会赢 → <span class="green font-bold">${fav.code}</span></span>
